@@ -7,6 +7,9 @@ import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
     const [isAddPortfolioModalOpen, setIsAddPortfolioModalOpen] = useState(false);
+    const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+    const [isBrokerageModalOpen, setIsBrokerageModalOpen] = useState(false);
+    const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
 
     return (
         <div className="flex flex-col min-h-screen bg-background pb-24">
@@ -55,18 +58,18 @@ export default function ProfilePage() {
                         </div>
 
                         {/* Notification Filter */}
-                        <Link href="/chat?topic=Smart%20Notification%20Settings" className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <button onClick={() => setIsNotificationModalOpen(true)} className="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <BellOff size={20} />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <h4 className="font-bold text-sm text-foreground">Smart Notification</h4>
                                     <p className="text-xs text-foreground-muted">Hanya notifikasi dari aset berisiko (GOTO, BUKA)</p>
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
-                        </Link>
+                        </button>
 
                     </div>
                 </section>
@@ -84,12 +87,12 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
-                        <Link href="/chat?topic=Portfolio%20Review" className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <button onClick={() => setIsBrokerageModalOpen(true)} className="w-full flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <Wallet size={20} />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <h4 className="font-bold text-sm text-foreground">Linked Brokerage</h4>
                                     <p className="text-xs text-foreground-muted">Ajaib Sekuritas (Connected via Open API)</p>
                                 </div>
@@ -98,20 +101,20 @@ export default function ProfilePage() {
                                 <span className="text-xs font-bold text-primary">Active</span>
                                 <ChevronRight size={18} className="text-foreground-muted" />
                             </div>
-                        </Link>
+                        </button>
 
-                        <Link href="/chat?topic=Change%20Risk%20Profile" className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <button onClick={() => setIsRiskModalOpen(true)} className="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <Settings size={20} />
                                 </div>
-                                <div>
+                                <div className="text-left">
                                     <h4 className="font-bold text-sm text-foreground">Risk Profile Settings</h4>
                                     <p className="text-xs text-foreground-muted">Moderate - Balanced</p>
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
-                        </Link>
+                        </button>
                     </div>
                 </section>
 
@@ -176,6 +179,129 @@ export default function ProfilePage() {
                 </div>
             )}
 
+            {/* Risk Profile Modal */}
+            {isRiskModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground flex items-center gap-2"><Settings size={18} className="text-primary" /> Risk Profile</h3>
+                                <p className="text-xs text-foreground-muted mt-0.5">Sesuaikan tingkat toleransi risiko Anda.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsRiskModalOpen(false)}
+                                className="p-2 bg-surface-active hover:bg-surface-hover rounded-full text-foreground-muted transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-5 flex flex-col gap-3">
+                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none">
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground">Conservative</h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Fokus pada pelestarian modal. (Reksadana/SBN)</p>
+                                </div>
+                            </button>
+                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none">
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                        Moderate <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>
+                                    </h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Kombinasi pertumbuhan dan stabilitas (Bluechip + ETF).</p>
+                                </div>
+                                <ShieldCheck size={18} className="text-primary" />
+                            </button>
+                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-danger/50 outline-none">
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground text-danger">Aggressive</h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Fokus imbal hasil tinggi, siap fluktuasi tajam (Saham Lapis 2/3).</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Linked Brokerage Modal */}
+            {isBrokerageModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground flex items-center gap-2"><Wallet size={18} className="text-primary" /> Linked Brokerage</h3>
+                                <p className="text-xs text-foreground-muted mt-0.5">Kelola koneksi sekuritas Anda.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsBrokerageModalOpen(false)}
+                                className="p-2 bg-surface-active hover:bg-surface-hover rounded-full text-foreground-muted transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-5 flex flex-col gap-4">
+                            <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 flex flex-col gap-3">
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 font-bold">A</div>
+                                        <div>
+                                            <h4 className="font-bold text-sm text-foreground">Ajaib Sekuritas</h4>
+                                            <p className="text-xs text-foreground-muted flex items-center gap-1"><span className="w-1.5 h-1.5 bg-primary rounded-full"></span> Connected: Real-time</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded-lg">Default</span>
+                                </div>
+                                <button onClick={() => setIsBrokerageModalOpen(false)} className="w-full py-2 text-xs font-bold text-danger border border-danger/20 rounded-lg hover:bg-danger/5 transition-colors">
+                                    Disconnect Account
+                                </button>
+                            </div>
+
+                            <button onClick={() => { setIsBrokerageModalOpen(false); setIsAddPortfolioModalOpen(true); }} className="w-full py-3 rounded-xl border border-dashed border-border text-foreground-muted font-bold text-xs hover:border-primary/50 hover:text-primary transition-colors flex items-center justify-center gap-2">
+                                <Plus size={16} /> Link New Brokerage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Smart Notification Modal */}
+            {isNotificationModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-lg font-bold text-foreground flex items-center gap-2"><BellOff size={18} className="text-primary" /> Smart Notification</h3>
+                                <p className="text-xs text-foreground-muted mt-0.5">Filter peringatan dari aset berbahaya.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsNotificationModalOpen(false)}
+                                className="p-2 bg-surface-active hover:bg-surface-hover rounded-full text-foreground-muted transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-5 flex flex-col gap-3">
+                            <button className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none">
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground">Semua Notifikasi</h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Dapatkan notifikasi harian untuk portofolio sehat & berisiko.</p>
+                                </div>
+                            </button>
+                            <button className="flex items-center justify-between p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none">
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                        Hanya Aset Berisiko Tinggi <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>
+                                    </h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Saring sinyal bising. Peringatkan saya jika GOTO / BUKA bermasalah.</p>
+                                </div>
+                                <ShieldCheck size={18} className="text-primary" />
+                            </button>
+                            <button onClick={() => setIsNotificationModalOpen(false)} className="w-full mt-2 py-3 bg-primary text-white rounded-xl text-xs font-bold transition-colors">
+                                Simpan Pengaturan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
