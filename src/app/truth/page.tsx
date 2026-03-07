@@ -1,156 +1,335 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText } from "lucide-react";
+import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText, Search, ShieldAlert, AlertOctagon, CheckCircle2, ShieldQuestion } from "lucide-react";
+
+type ScanResult = {
+    riskLevel: "Low" | "Moderate" | "High";
+    truthScore: number;
+    analysis: string;
+};
 
 export default function TruthScorePage() {
+    const [activeTab, setActiveTab] = useState<"analysis" | "scanner">("analysis");
+
+    // --- SCANNER STATE ---
+    const [inputType, setInputType] = useState<"text" | "link">("text");
+    const [inputValue, setInputValue] = useState("");
+    const [isScanning, setIsScanning] = useState(false);
+    const [result, setResult] = useState<ScanResult | null>(null);
+
+    const handleScan = async () => {
+        if (!inputValue.trim()) return;
+
+        setIsScanning(true);
+        setResult(null);
+
+        try {
+            const response = await fetch("/api/scan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ input: inputValue, type: inputType }),
+            });
+            const data = await response.json();
+            setResult(data);
+        } catch (error) {
+            console.error("Error scanning:", error);
+            setResult({
+                riskLevel: "Moderate",
+                truthScore: 50,
+                analysis: "Terjadi kesalahan saat menghubungi server AI. Coba lagi nanti.",
+            });
+        } finally {
+            setIsScanning(false);
+        }
+    };
+
+    const handlePaste = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            setInputValue(text);
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-screen bg-background pb-24">
-            {/* Header */}
-            <header className="px-5 pt-10 pb-6 flex flex-col items-center justify-center border-b border-border/10 bg-surface">
-                <h1 className="text-xl font-bold text-foreground">Truth Score</h1>
+            {/* Dynamic Header */}
+            <header className="px-5 pt-10 pb-4 flex flex-col items-center justify-center border-b border-border/10 bg-surface">
+                <h1 className="text-xl font-bold text-foreground">Truth Hub</h1>
                 <p className="text-xs text-foreground-muted mt-1 text-center max-w-[250px] leading-relaxed">
-                    AI-powered financial statement integrity
+                    {activeTab === "analysis" ? "AI-powered financial statement integrity" : "Deep-scan influencer claims and links"}
                 </p>
 
-                {/* Circular Progress (Mock SVG for the "61 Avg Score" look) */}
-                <div className="relative mt-8 mb-6 flex items-center justify-center">
-                    <svg className="w-40 h-40 transform -rotate-90">
-                        {/* Background Track */}
-                        <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-surface-active" />
-
-                        {/* Safe / Primary Path */}
-                        <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent"
-                            className="text-primary"
-                            strokeDasharray="440"
-                            strokeDashoffset={440 - (440 * 0.1)}
-                        />
-                        {/* Warning Path */}
-                        <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent"
-                            className="text-warning"
-                            strokeDasharray="440"
-                            strokeDashoffset={440 - (440 * 0.51)}
-                            transform="rotate(36 80 80)"
-                        />
-                    </svg>
-                    <div className="absolute flex flex-col items-center justify-center">
-                        <span className="text-4xl font-bold text-foreground tracking-tight">61</span>
-                        <span className="text-[10px] text-foreground-muted font-semibold mt-1">Avg Score</span>
-                    </div>
-                </div>
-
-                {/* Legend */}
-                <div className="flex items-center gap-4 text-[10px] font-medium text-foreground-muted">
-                    <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-primary"></div> 70-100 Safe</div>
-                    <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning"></div> 40-69 Caution</div>
-                    <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-danger"></div> 0-39 Danger</div>
+                {/* Top Navigation Tabs */}
+                <div className="flex bg-surface-active p-1 rounded-xl w-full mt-6 mb-2 mx-auto gap-1">
+                    <button
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${activeTab === 'analysis' ? 'bg-primary text-white shadow-sm' : 'text-foreground-muted hover:text-foreground'}`}
+                        onClick={() => setActiveTab('analysis')}
+                    >
+                        Dashboard
+                    </button>
+                    <button
+                        className={`flex-1 py-2 text-xs font-bold rounded-lg transition-colors ${activeTab === 'scanner' ? 'bg-primary text-white shadow-sm' : 'text-foreground-muted hover:text-foreground'}`}
+                        onClick={() => setActiveTab('scanner')}
+                    >
+                        Scanner
+                    </button>
                 </div>
             </header>
 
-            {/* Stock Analysis List */}
-            <div className="p-5 flex flex-col gap-4">
-                <div className="flex items-center justify-between mb-1 px-1">
-                    <h3 className="text-sm font-bold text-foreground-muted tracking-wide uppercase">Stock Analysis</h3>
-                    <button className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-active hover:bg-surface-hover rounded-md text-[10px] font-semibold text-foreground transition-colors">
-                        <ArrowDownUp size={12} /> Score High
-                    </button>
-                </div>
+            {/* ===================== TAB: ANALYSIS ===================== */}
+            {activeTab === "analysis" && (
+                <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="flex flex-col items-center justify-center pt-4">
+                        {/* Circular Progress (Mock SVG for the "61 Avg Score" look) */}
+                        <div className="relative mt-2 mb-6 flex items-center justify-center">
+                            <svg className="w-40 h-40 transform -rotate-90">
+                                {/* Background Track */}
+                                <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-surface-active" />
 
-                {/* Detailed Item (Open State) - BBCA */}
-                <div className="bg-surface rounded-2xl border border-primary/30 p-4 shadow-sm relative overflow-hidden">
-                    {/* Subtle glow effect */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-
-                    <div className="flex justify-between items-center mb-5 relative z-10">
-                        <div className="flex items-center gap-3">
-                            <div className="relative w-12 h-12 flex items-center justify-center">
-                                <svg className="w-full h-full transform -rotate-90 absolute">
-                                    <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                    <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.92)} />
-                                </svg>
-                                <span className="text-sm font-bold text-primary">92</span>
+                                {/* Safe / Primary Path */}
+                                <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent"
+                                    className="text-primary"
+                                    strokeDasharray="440"
+                                    strokeDashoffset={440 - (440 * 0.1)}
+                                />
+                                {/* Warning Path */}
+                                <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="8" fill="transparent"
+                                    className="text-warning"
+                                    strokeDasharray="440"
+                                    strokeDashoffset={440 - (440 * 0.51)}
+                                    transform="rotate(36 80 80)"
+                                />
+                            </svg>
+                            <div className="absolute flex flex-col items-center justify-center">
+                                <span className="text-4xl font-bold text-foreground tracking-tight">61</span>
+                                <span className="text-[10px] text-foreground-muted font-semibold mt-1">Avg Score</span>
                             </div>
-                            <div>
-                                <div className="flex items-center gap-2 mb-0.5">
-                                    <h4 className="font-bold text-base text-foreground">BBCA</h4>
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
+                        </div>
+
+                        {/* Legend */}
+                        <div className="flex items-center justify-center gap-4 text-[10px] font-medium text-foreground-muted pb-4">
+                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-primary"></div> 70-100 Safe</div>
+                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-warning"></div> 40-69 Caution</div>
+                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-danger"></div> 0-39 Danger</div>
+                        </div>
+                    </div>
+
+                    {/* Stock Analysis List */}
+                    <div className="p-5 flex flex-col gap-4">
+                        <div className="flex items-center justify-between mb-1 px-1">
+                            <h3 className="text-sm font-bold text-foreground-muted tracking-wide uppercase">Stock Analysis</h3>
+                            <button className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-active hover:bg-surface-hover rounded-md text-[10px] font-semibold text-foreground transition-colors">
+                                <ArrowDownUp size={12} /> Score High
+                            </button>
+                        </div>
+
+                        {/* Detailed Item (Open State) - BBCA */}
+                        <div className="bg-surface rounded-2xl border border-primary/30 p-4 shadow-sm relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+
+                            <div className="flex justify-between items-center mb-5 relative z-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="relative w-12 h-12 flex items-center justify-center">
+                                        <svg className="w-full h-full transform -rotate-90 absolute">
+                                            <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
+                                            <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.92)} />
+                                        </svg>
+                                        <span className="text-sm font-bold text-primary">92</span>
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                            <h4 className="font-bold text-base text-foreground">BBCA</h4>
+                                            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
+                                        </div>
+                                        <p className="text-xs text-foreground-muted">Bank Central Asia</p>
+                                    </div>
                                 </div>
-                                <p className="text-xs text-foreground-muted">Bank Central Asia</p>
+                                <ChevronDown size={18} className="text-foreground-muted cursor-pointer" />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
+                                <div className="bg-background rounded-xl p-3 border border-border/50">
+                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingUp size={10} /> Net Profit</span>
+                                    <p className="text-sm font-bold text-foreground">Rp 48.2T</p>
+                                </div>
+                                <div className="bg-background rounded-xl p-3 border border-border/50">
+                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingDown size={10} /> Cash Flow</span>
+                                    <p className="text-sm font-bold text-foreground">Rp 45.8T</p>
+                                </div>
+                            </div>
+
+                            <div className="mb-4 relative z-10">
+                                <div className="flex justify-between text-[10px] mb-2">
+                                    <span className="text-foreground-muted font-medium">Profit-Cash Alignment</span>
+                                    <span className="font-bold text-primary">95%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-surface-active rounded-full overflow-hidden">
+                                    <div className="h-full bg-primary rounded-full w-[95%]"></div>
+                                </div>
+                            </div>
+
+                            <div className="bg-[#0c182a] border border-[#1e3a8a]/30 p-3 rounded-lg flex items-center gap-2 relative z-10">
+                                <FileText size={14} className="text-blue-400" />
+                                <p className="text-xs font-medium text-blue-400">No anomalies detected in financial statements</p>
                             </div>
                         </div>
-                        <ChevronDown size={18} className="text-foreground-muted cursor-pointer" />
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
-                        <div className="bg-background rounded-xl p-3 border border-border/50">
-                            <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingUp size={10} /> Net Profit</span>
-                            <p className="text-sm font-bold text-foreground">Rp 48.2T</p>
-                        </div>
-                        <div className="bg-background rounded-xl p-3 border border-border/50">
-                            <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingDown size={10} /> Cash Flow</span>
-                            <p className="text-sm font-bold text-foreground">Rp 45.8T</p>
-                        </div>
-                    </div>
-
-                    <div className="mb-4 relative z-10">
-                        <div className="flex justify-between text-[10px] mb-2">
-                            <span className="text-foreground-muted font-medium">Profit-Cash Alignment</span>
-                            <span className="font-bold text-primary">95%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-surface-active rounded-full overflow-hidden">
-                            <div className="h-full bg-primary rounded-full w-[95%]"></div>
-                        </div>
-                    </div>
-
-                    <div className="bg-[#0c182a] border border-[#1e3a8a]/30 p-3 rounded-lg flex items-center gap-2 relative z-10">
-                        <FileText size={14} className="text-blue-400" />
-                        <p className="text-xs font-medium text-blue-400">No anomalies detected in financial statements</p>
-                    </div>
-                </div>
-
-                {/* Closed Item - TLKM */}
-                <div className="bg-surface rounded-2xl border border-border/50 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
-                    <div className="flex items-center gap-3">
-                        <div className="relative w-12 h-12 flex items-center justify-center">
-                            <svg className="w-full h-full transform -rotate-90 absolute">
-                                <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.85)} />
-                            </svg>
-                            <span className="text-sm font-bold text-primary">85</span>
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2 mb-0.5">
-                                <h4 className="font-bold text-base text-foreground">TLKM</h4>
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
+                        {/* Closed Item - TLKM */}
+                        <div className="bg-surface rounded-2xl border border-border/50 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-12 h-12 flex items-center justify-center">
+                                    <svg className="w-full h-full transform -rotate-90 absolute">
+                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
+                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.85)} />
+                                    </svg>
+                                    <span className="text-sm font-bold text-primary">85</span>
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                        <h4 className="font-bold text-base text-foreground">TLKM</h4>
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
+                                    </div>
+                                    <p className="text-xs text-foreground-muted">Telkom Indonesia</p>
+                                </div>
                             </div>
-                            <p className="text-xs text-foreground-muted">Telkom Indonesia</p>
+                            <ChevronRight size={18} className="text-foreground-muted" />
                         </div>
-                    </div>
-                    <ChevronRight size={18} className="text-foreground-muted" />
-                </div>
 
-                {/* Closed Item - GOTO (Warning) */}
-                <div className="bg-surface rounded-2xl border border-warning/20 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
-                    <div className="flex items-center gap-3">
-                        <div className="relative w-12 h-12 flex items-center justify-center">
-                            <svg className="w-full h-full transform -rotate-90 absolute">
-                                <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-warning" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.42)} />
-                            </svg>
-                            <span className="text-sm font-bold text-warning">42</span>
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2 mb-0.5">
-                                <h4 className="font-bold text-base text-foreground">GOTO</h4>
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">C</span>
+                        {/* Closed Item - GOTO (Warning) */}
+                        <div className="bg-surface rounded-2xl border border-warning/20 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-12 h-12 flex items-center justify-center">
+                                    <svg className="w-full h-full transform -rotate-90 absolute">
+                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
+                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-warning" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.42)} />
+                                    </svg>
+                                    <span className="text-sm font-bold text-warning">42</span>
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                        <h4 className="font-bold text-base text-foreground">GOTO</h4>
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">C</span>
+                                    </div>
+                                    <p className="text-xs text-foreground-muted">GoTo Gojek Tokopedia</p>
+                                </div>
                             </div>
-                            <p className="text-xs text-foreground-muted">GoTo Gojek Tokopedia</p>
+                            <ChevronRight size={18} className="text-foreground-muted" />
+                        </div>
+
+                    </div>
+                </div>
+            )}
+
+            {/* ===================== TAB: SCANNER ===================== */}
+            {activeTab === "scanner" && (
+                <div className="p-5 flex flex-col min-h-[70vh] animate-in fade-in slide-in-from-bottom-2 duration-300">
+
+                    {/* Input Type Toggle */}
+                    <div className="flex bg-surface-active p-1 rounded-xl w-full mb-6">
+                        <button
+                            className={`flex-1 py-1.5 text-[11px] font-bold rounded-lg transition-colors ${inputType === 'link' ? 'bg-primary text-white shadow-sm' : 'text-foreground-muted hover:text-foreground'}`}
+                            onClick={() => setInputType('link')}
+                        >
+                            URL Link
+                        </button>
+                        <button
+                            className={`flex-1 py-1.5 text-[11px] font-bold rounded-lg transition-colors ${inputType === 'text' ? 'bg-primary text-white shadow-sm' : 'text-foreground-muted hover:text-foreground'}`}
+                            onClick={() => setInputType('text')}
+                        >
+                            Teks Biasa
+                        </button>
+                    </div>
+
+                    <div className="bg-surface rounded-2xl border border-border shadow-sm p-4 mb-6 relative group focus-within:ring-2 focus-within:ring-primary/20">
+                        <div className="flex items-center gap-2 mb-2 text-primary font-bold text-xs uppercase tracking-wider">
+                            {inputType === 'text' ? <FileText size={14} /> : <Search size={14} />}
+                            {inputType === 'text' ? 'Paste Text/Claim' : 'Paste Article/Social Link'}
+                        </div>
+                        <textarea
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder={inputType === 'text' ? "Ketikkan klaim berlebihan yang mencurigakan di WhatsApp..." : "https://tiktok.com/@pompom..."}
+                            className="w-full h-28 bg-transparent text-sm text-foreground placeholder:text-foreground-muted outline-none resize-none"
+                        />
+                        <div className="absolute top-4 right-4 animate-in fade-in duration-300">
+                            <button
+                                onClick={handlePaste}
+                                className="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg text-xs font-bold ring-1 ring-primary/20 transition-colors"
+                            >
+                                Paste
+                            </button>
                         </div>
                     </div>
-                    <ChevronRight size={18} className="text-foreground-muted" />
-                </div>
 
-            </div>
+                    <button
+                        onClick={handleScan}
+                        disabled={!inputValue.trim() || isScanning}
+                        className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-md group ${!inputValue.trim() || isScanning ? "bg-surface-active text-foreground-muted cursor-not-allowed" : "bg-primary text-white hover:bg-primary-dark"
+                            }`}
+                    >
+                        {isScanning ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Analyzing the Truth...
+                            </>
+                        ) : (
+                            <>
+                                <Search size={18} className="group-hover:scale-110 transition-transform" />
+                                Scan Red Flags
+                            </>
+                        )}
+                    </button>
+
+                    {/* Result Block */}
+                    {result && !isScanning && (
+                        <div className="mt-8 animate-in slide-in-from-bottom-5 duration-500 pb-10">
+                            <h2 className="font-bold text-foreground mb-4">Analysis Result</h2>
+
+                            <div className={`p-5 rounded-2xl border flex flex-col gap-4 relative overflow-hidden ${result.riskLevel === "High" ? "bg-danger/5 border-danger/30" :
+                                    result.riskLevel === "Moderate" ? "bg-warning/5 border-warning/30" :
+                                        "bg-primary/5 border-primary/30"
+                                }`}>
+
+                                <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-50 ${result.riskLevel === "High" ? "bg-danger/20" : result.riskLevel === "Moderate" ? "bg-warning/20" : "bg-primary/20"
+                                    }`}></div>
+
+                                <div className="flex items-center gap-3 relative z-10">
+                                    {result.riskLevel === "High" && <AlertOctagon size={28} className="text-danger" />}
+                                    {result.riskLevel === "Moderate" && <ShieldQuestion size={28} className="text-warning dark:text-warning" />}
+                                    {result.riskLevel === "Low" && <CheckCircle2 size={28} className="text-primary dark:text-primary" />}
+
+                                    <div>
+                                        <h3 className={`font-black uppercase tracking-tight text-lg ${result.riskLevel === "High" ? "text-danger" : result.riskLevel === "Moderate" ? "text-warning dark:text-warning" : "text-primary dark:text-primary"
+                                            }`}>
+                                            {result.riskLevel} Risk
+                                        </h3>
+                                        <p className="text-xs text-foreground-muted font-medium mt-0.5">Truth Score: {result.truthScore}/100</p>
+                                    </div>
+                                </div>
+
+                                <div className="w-full bg-surface/50 h-2 rounded-full overflow-hidden mt-1 relative z-10">
+                                    <div
+                                        className={`h-full rounded-full transition-all duration-1000 ${result.riskLevel === "High" ? "bg-danger" : result.riskLevel === "Moderate" ? "bg-warning" : "bg-primary"
+                                            }`}
+                                        style={{ width: `${result.truthScore}%` }}
+                                    ></div>
+                                </div>
+
+                                <div className="mt-2 text-sm text-foreground leading-relaxed relative z-10">
+                                    <strong className="block text-xs font-bold text-foreground-muted uppercase tracking-wider mb-2">AI Findings</strong>
+                                    {result.analysis}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
