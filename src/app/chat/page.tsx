@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, ShieldCheck, ToggleLeft, ToggleRight, X } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ChatContext = {
     type: "stock";
@@ -175,7 +177,11 @@ export default function ChatPage() {
                                 </div>
                             )}
 
-                            {m.content}
+                            <div className="prose prose-sm prose-invert max-w-none text-current leading-relaxed break-words">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {m.content}
+                                </ReactMarkdown>
+                            </div>
                         </div>
                     </div>
                 ))}
