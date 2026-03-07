@@ -190,16 +190,6 @@ Jika Net Profit positif tapi Operating Cash Flow negatif berulang kali, artinya 
                             </div>
                         </div>
 
-                        <div className="flex gap-4 relative z-10 opacity-60">
-                            <div className="w-5 h-5 rounded-full bg-surface-hover border-2 border-surface-active flex items-center justify-center mt-1 outline outline-4 outline-surface z-10">
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-sm text-foreground">Mastering &quot;Cash Flow&quot; vs &quot;Net Profit&quot;</h4>
-                                <p className="text-xs text-foreground-muted mt-1">Upcoming module based on your BBCA Truth Score analysis.</p>
-                                <span className="inline-block mt-2 px-2 py-0.5 border border-primary/30 text-primary rounded text-[10px] font-bold">In Progress</span>
-                            </div>
-                        </div>
-
                         {/* Map Dynamic Lessons */}
                         {lessons.map((lesson) => (
                             <div
