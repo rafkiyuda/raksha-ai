@@ -8,7 +8,7 @@ export async function POST(req: Request) {
         const { input, type } = await req.json();
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: "Kamu adalah sistem audit RAKSHA AI ('Finfluencer Red Flag Scanner'). Tugasmu adalah menganalisis teks atau konteks dari URL yang diberikan user (teks post media sosial tentang saham). Berikan hasil scan dalam format JSON dengan struktur: { riskLevel: 'Low'|'Moderate'|'High', truthScore: number (0-100), analysis: 'penjelasan singkat mengapa', advice: 'saran edukatif untuk ritel' }. Fokus pada mendeteksi hype tanpa fundamental, potensi pump & dump, dan asimetri informasi."
         });
 
