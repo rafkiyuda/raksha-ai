@@ -260,7 +260,7 @@ export default function JourneyPage() {
             {/* Interactive Lesson Modal */}
             {selectedLesson && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-surface w-full sm:w-[500px] h-[85vh] sm:h-[600px] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-500">
+                    <div className="bg-surface w-full sm:w-[500px] h-[92vh] sm:h-[620px] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-500">
 
                         {/* Modal Header */}
                         <div className="p-4 border-b border-border/50 flex justify-between items-center bg-surface sticky top-0 z-20">
@@ -280,13 +280,13 @@ export default function JourneyPage() {
 
                             {/* Step: Intro */}
                             {lessonStep === 'intro' && (
-                                <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div className="flex-1 flex flex-col justify-center items-center text-center">
+                                <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                                    <div className="flex flex-col items-center text-center pt-4">
                                         <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 ring-8 ring-primary/5">
                                             <Target size={48} />
                                         </div>
                                         <h2 className="text-2xl font-extrabold text-foreground mb-3">{selectedLesson.title}</h2>
-                                        <p className="text-sm text-foreground-muted mb-8 max-w-xs">{selectedLesson.description}</p>
+                                        <p className="text-sm text-foreground-muted mb-6 max-w-xs">{selectedLesson.description}</p>
 
                                         <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-xl font-bold border border-warning/20">
                                             <Star size={18} className="fill-warning" />
