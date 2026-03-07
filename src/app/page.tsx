@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet, Lock, CheckCircle2, MessageSquarePlus } from "lucide-react";
+import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet, Lock, CheckCircle2, MessageSquarePlus, X, Bell } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +28,10 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="relative p-2 rounded-full text-foreground-muted hover:bg-surface-hover transition-colors">
+          <button
+            onClick={() => setIsNotificationOpen(true)}
+            className="relative p-2 rounded-full text-foreground-muted hover:bg-surface-hover transition-colors"
+          >
             <BellRing size={22} />
             <span className="absolute top-1.5 right-2 w-2 h-2 bg-danger rounded-full border-2 border-surface"></span>
           </button>
@@ -157,6 +161,92 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      {/* Notifications Modal */}
+      {isNotificationOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-surface w-full sm:w-[450px] max-h-[85vh] rounded-t-3xl sm:rounded-3xl shadow-xl overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-500 border border-border">
+
+            <div className="px-5 py-4 border-b border-border/50 flex justify-between items-center bg-surface sticky top-0 z-10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <Bell size={16} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-foreground">Notifications</h3>
+                  <p className="text-[10px] text-foreground-muted">You have 2 unread messages</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsNotificationOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-hover text-foreground-muted hover:text-foreground transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 p-2 hide-scrollbar">
+
+              <div className="p-3 mb-1 rounded-2xl bg-danger/5 border border-danger/10 flex gap-3 relative overflow-hidden group hover:bg-danger/10 transition-colors mx-2 mt-2">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-danger rounded-l-2xl"></div>
+                <div className="w-10 h-10 rounded-full bg-danger/10 text-danger flex items-center justify-center shrink-0">
+                  <ShieldAlert size={20} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-bold text-sm text-foreground">High Risk Detection</h4>
+                    <span className="text-[10px] text-foreground-muted font-medium">Just now</span>
+                  </div>
+                  <p className="text-xs text-foreground-muted leading-relaxed">
+                    Unusual pumping activity detected on <strong className="text-foreground">GOTO</strong>. Proceed with caution.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 mb-1 rounded-2xl bg-surface-active border border-transparent flex gap-3 group hover:bg-surface-hover transition-colors mx-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <CheckCircle2 size={20} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-bold text-sm text-foreground">Portfolio Rebalanced</h4>
+                    <span className="text-[10px] text-foreground-muted font-medium">2 hours ago</span>
+                  </div>
+                  <p className="text-xs text-foreground-muted leading-relaxed">
+                    Your suggested rebalancing action was successfully simulated.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-surface border border-transparent flex gap-3 opacity-60 group mx-2">
+                <div className="w-10 h-10 rounded-full bg-surface-active text-foreground-muted flex items-center justify-center shrink-0">
+                  <MessageSquarePlus size={20} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="font-bold text-sm text-foreground">New AI Insights</h4>
+                    <span className="text-[10px] text-foreground-muted font-medium">Yesterday</span>
+                  </div>
+                  <p className="text-xs text-foreground-muted leading-relaxed">
+                    Weekly market summary for banking sector is available.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="px-5 py-4 border-t border-border/50 bg-surface">
+              <button
+                onClick={() => setIsNotificationOpen(false)}
+                className="w-full py-3 rounded-xl bg-surface-active hover:bg-surface-hover text-foreground font-bold text-sm transition-colors"
+              >
+                Mark all as read
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
