@@ -27,14 +27,6 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="text-xs font-semibold px-2 py-1 rounded bg-surface-hover border border-border text-foreground-muted"
-            >
-              {theme === "dark" ? "Light" : "Dark"}
-            </button>
-          )}
           <button className="relative p-2 rounded-full text-foreground-muted hover:bg-surface-hover transition-colors">
             <BellRing size={22} />
             <span className="absolute top-1.5 right-2 w-2 h-2 bg-danger rounded-full border-2 border-surface"></span>

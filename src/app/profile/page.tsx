@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon } from "lucide-react";
 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
@@ -10,6 +11,14 @@ export default function ProfilePage() {
     const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isBrokerageModalOpen, setIsBrokerageModalOpen] = useState(false);
     const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
+
+    // Theme
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Upload State
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -154,6 +163,30 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
+                        </button>
+                    </div>
+                </section>
+
+                {/* App Settings */}
+                <section>
+                    <h3 className="text-sm font-bold text-foreground-muted uppercase tracking-wider mb-3 px-1">App Settings</h3>
+                    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
+                        <button
+                            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                            className="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-surface-active text-foreground">
+                                    <Moon size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Appearance</h4>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-foreground-muted capitalize">{theme === 'dark' ? 'Dark' : 'Light'}</span>
+                                <ChevronRight size={18} className="text-foreground-muted" />
+                            </div>
                         </button>
                     </div>
                 </section>
