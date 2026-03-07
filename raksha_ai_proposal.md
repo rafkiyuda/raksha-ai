@@ -25,26 +25,31 @@ Melindungi investor ritel dari risiko kerentanan informasi melalui kecerdasan bu
 
 ---
 
-## Proposed Solution: Sistem RAKSHA AI
+## Proposed Solution: Sistem RAKSHA AI (B2G2C Model)
 
-Sistem pendeteksi sinyal risiko atau indikator anomali (*detect risk signals or anomaly indicators*) yang terintegrasi secara cerdas dengan modul edukasi. Solusi ini berjalan secara hibrida, menghubungkan analisis *Truth Score* dengan pemahaman pengguna secara interaktif.
+Sistem pendeteksi sinyal risiko atau indikator anomali (*detect risk signals or anomaly indicators*) yang terintegrasi secara cerdas dengan modul edukasi. RAKSHA AI dirancang sebagai **Infrastruktur Pelindung Investor Ritel Publik** (kolaborasi dengan regulator seperti OJK/BEI), yang mana masyarakat/investor diletakkan sebagai *end-user* yang terlindungi.
 
-### 1. AI Co-Pilot Mode Hybrid
-Sistem dirancang sebagai asisten (*co-pilot*), bukan pengambil alih kendali penuh, guna meminimalisir risiko kegagalan sistem otomatis dan sejalan dengan peran edukatif aplikasi.
+### 1. Integrasi Portofolio Multi-Opsi (Open API & OCR)
+Berbekal dukungan regulator, RAKSHA AI beroperasi sebagai *Supervisory Aggregator* dengan mengutamakan fleksibilitas dan privasi pengguna:
+- **Otomatis (Open API):** Regulator mewajibkan seluruh platform sekuritas berlisensi di Indonesia menyediakan jalur *Open API* yang aman. Pengguna dapat menghubungkan (*link*) seluruh portofolio mereka secara *real-time* ke *dashboard* RAKSHA AI.
+- **Manual / OCR (Privacy Mode):** Bagi investor yang belum nyaman mengintegrasikan akun secara langsung, RAKSHA AI menyediakan opsi unggah tangkapan layar (*screenshot* / OCR) atau *input* manual. Meskipun tidak *real-time*, ini menjamin kerahasiaan data pengguna 100% tanpa risiko kredensial bocor.
+
+### 2. AI Co-Pilot Mode Hybrid
+Sistem dirancang sebagai asisten (*co-pilot*), bukan pengambil alih kendali penuh:
 - **Copilot Mode (Default):** AI memberikan *alert*, eksplanasi, dan rekomendasi terkait risiko, tetapi pengguna yang secara manual mengonfirmasi atau mengambil keputusan akhir.
-- **Autopilot Lite (Premium/Opsional):** Berfokus pada rekomendasi non-transaksi. AI memfasilitasi simulasi portofolio *"what-if"* (contoh: "Jika IHSG drop 5%, apakah portofoliomu aman? Berikut adalah simulasi diversifikasi"), serta auto-generate edukasi personal.
+- **Autopilot Lite (Premium/Opsional):** Berfokus pada rekomendasi non-transaksi. AI memfasilitasi simulasi portofolio *"what-if"* (contoh: "Jika IHSG drop 5%, apakah portofoliomu aman?"), serta auto-generate edukasi personal.
 
-### 2. Finfluencer Red Flag Scanner
-Merupakan sistem *cross-check* data publik melawan klaim bias edukator finansial di media sosial.
-- **Mekanisme:** Pengguna dapat menempelkan tautan (*paste link*) *post* dari X/IG/Platform lain. AI akan mengevaluasi sentimen (misal: *hype* tanpa landasan fundamental yang kuat) lalu melakukan *cross-check* dengan data resmi Bursa (Notasi Khusus, Laporan Keuangan) dan *Alert* OJK.
-- **Output:** Menyediakan tingkat kewaspadaan, misalnya: *"Red Flag Level: High – Influencer hype saham ini tanpa menyebutkan risiko. Truth Score emiten ini rendah karena anomali arus kas."*
-- **Edukasi:** Menambahkan konteks historis, *"Selalu cross-check sumber resmi untuk menghindari praktik seperti pump & dump."*
+### 3. Finfluencer Red Flag Scanner & Smart Ad Blocker
+Merupakan sistem *cross-check* data publik melawan klaim bias edukator finansial di media sosial, terstandarisasi sebagai "Truth Score" pengawasan nasional.
+- **Mekanisme:** Pengguna dapat menempelkan tautan (*paste link*) *post* dari platform sosial. AI mengevaluasi sentimen (*hype* tanpa landasan), dan mencocokkannya dengan realitas *Fundamental* BEI & OJK.
+- **Output:** Menyediakan tingkat kewaspadaan, misalnya: *"Red Flag Level: High – Truth Score rendah akibat anomali arus kas emiten."*
+- **Ad Blocker / Intervensi Notifikasi:** RAKSHA AI dapat secara proaktif memukul mundur *"pompom"* manipulatif. Jika kondisi pasar gawat, OJK via RAKSHA dapat mengirim *"Risk Alert Notification"* yang langsung ter- *push* terintegrasi ke dalam aplikasi sekuritas milik sang investor.
 
-### 3. AI Risk Explainer + Education Layer
+### 4. AI Risk Explainer + Education Layer
 Ketika *alert* risiko muncul, sistem akan memberikan *pop-up* penjelasan yang ringkas dan visual.
 - **Contoh:** Jika terdapat *Special Notation* (Notasi Khusus) pada sebuah emiten, AI menjelaskan maknanya dalam bahasa sederhana: *"Apa artinya? Status ini diberikan BEI untuk emiten dengan isu potensial... Apa yang harus dipertimbangkan? Hindari keputusan impulsif, buat skala prioritas."* (Disertai tautan ke glosarium OJK/BEI).
 
-### 4. AI Education Chatbot (Personal Guru)
+### 5. AI Education Chatbot (Personal Guru)
 Pengguna dapat bertanya secara bebas layaknya berbicara dengan mentor finansial.
 - **Contoh Interaksi:** 
   *User:* "Kenapa saham X ini berisiko?"
@@ -52,7 +57,7 @@ Pengguna dapat bertanya secara bebas layaknya berbicara dengan mentor finansial.
   *User:* "Apa itu negative equity?"
   *AI:* "Artinya aset lebih kecil dari utang, yang memunculkan risiko kebangkrutan. Buat pemula, biasanya dihindari."
 
-### 5. Gamification & Progress Tracker Literasi
+### 6. Gamification & Progress Tracker Literasi
 Mengasah *skill* fundamental pengguna melalui perjalanan (*journey*) yang direkam.
 - **Literasi Journey Tracker:** Pengguna memulai dari level "Pemula". Setiap kali *alert* dipelajari dan kuis interaktif dari *chatbot* dijawab dengan benar, pengguna mendapatkan poin dan *badge* (seperti "Risk Master" atau "Smart Diversifier").
 - **Dampak:** Membuat edukasi lebih menarik (*engaging*) dan sesuai sasaran OJK/BI untuk meningkatkan kemandirian literasi, sehingga ritel tidak panik saat pasar sedang volatil.
