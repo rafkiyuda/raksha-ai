@@ -25,41 +25,91 @@ export default function JourneyPage() {
     const [lessonStep, setLessonStep] = useState<'intro' | 'reading' | 'quiz' | 'completed'>('intro');
     const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
     const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
+    const [completedIds, setCompletedIds] = useState<number[]>([1, 2]);
 
     const pointsToNextLevel = 2000;
     const progress = (points / pointsToNextLevel) * 100;
 
-    const lessons = [
+    const allLessons: Lesson[] = [
         {
-            id: 1,
-            title: 'Mastering "Cash Flow" vs "Net Profit"',
-            description: 'Learn why a company showing profit can still go bankrupt if the cash flow is negative.',
-            xpReward: 150,
-            status: 'in_progress', // completed, in_progress, locked
-            content: `
-Banyak investor pemula terjebak melihat **Net Profit** (Laba Bersih) yang meroket, lalu buru-buru membeli sahamnya. Padahal, ada metrik yang lebih krusial: **Operating Cash Flow** (Arus Kas Operasi).
-
-**Kenapa ini penting?**
-Net Profit bisa dimanipulasi secara akuntansi (misal: mencatat piutang yang belum dibayar sebagai pendapatan). Tapi Cash Flow adalah uang tunai riil yang masuk ke rekening bank perusahaan. 
-
-Jika Net Profit positif tapi Operating Cash Flow negatif berulang kali, artinya perusahaan kesulitan menagih utang pelanggan. Ingat: **Cash is King!** Perusahaan bangkrut bukan karena tidak cetak laba, tapi karena kehabisan uang tunai untuk bayar gaji dan operasional.
-            `,
-            quiz: {
-                question: "Sebuah perusahaan mencetak Laba Bersih Rp 100 Miliar, tapi Arus Kas Operasinya minus Rp 50 Miliar. Apa indikasi terkuat dari kondisi ini?",
-                options: [
-                    "Perusahaan sangat sehat karena labanya besar.",
-                    "Perusahaan melakukan banyak investasi cerdas.",
-                    "Penjualan tinggi tapi pelanggan belum membayar (banyak piutang).",
-                    "Perusahaan siap membagikan dividen besar."
-                ],
-                correctAnswer: 2,
-                explanation: "Tepat! Laba dicatat saat transaksi terjadi, meskipun uang belum diterima (piutang). Jika arus kas negatif, artinya uang kas riil belum masuk ke perusahaan."
-            }
-        }
+            id: 1, xpReward: 50,
+            title: 'Memahami "Notasi Khusus" BEI',
+            description: 'Apa arti notasi E, FZ, dan lainnya di papan saham IDX?',
+            status: 'completed',
+            content: `Bursa Efek Indonesia (BEI) menggunakan notasi khusus untuk saham-saham tertentu agar investor waspada.\n\nE — Perusahaan tidak menyampaikan laporan keuangan tepat waktu.\nFZ — Saham berada dalam pembekuan efek (frozen).\nX — Saham sedang dalam suspend perdagangan.\nS — Saham terkena penghentian sementara (suspensi) karena aksi korporasi besar.\n\nMemahami notasi ini adalah lini pertama pertahanan investor dari saham bermasalah.`,
+            quiz: { question: 'Apa arti notasi "E" pada papan saham BEI?', options: ['Emiten terbesar di Indonesia', 'Laporan keuangan tidak disampaikan tepat waktu', 'Saham dalam fase ekspansi', 'Efek syariah terdaftar'], correctAnswer: 1, explanation: 'Notasi E berarti emiten gagal menyampaikan laporan keuangan tepat waktu, tanda awal potensi masalah.' }
+        },
+        {
+            id: 2, xpReward: 100,
+            title: 'Mengenali Pola Pump & Dump',
+            description: 'Bagaimana volume lonjakan bisa menjadi sinyal bahaya?',
+            status: 'completed',
+            content: `Pump & Dump adalah skema manipulasi harga saham yang sering terjadi di pasar saham dengan likuiditas rendah.\n\nFase Pump: Manipulator membeli saham besar-besaran untuk menaikkan harga, lalu menyebarkan rumor positif.\n\nFase Dump: Setelah investor ritel berbondong masuk (FOMO), manipulator menjual semua kepemilikan dengan profit besar, harga saham pun jatuh.\n\nSinyal Waspada: Volume perdagangan naik 3–5x rata-rata dalam waktu singkat tanpa berita fundamental yang jelas.`,
+            quiz: { question: 'Apa sinyal utama potensi Pump & Dump yang harus diwaspadai?', options: ['Peningkatan laba bersih secara konsisten', 'Volume perdagangan naik drastis tanpa berita fundamental', 'Saham masuk indeks LQ45', 'Dividen meningkat setiap tahun'], correctAnswer: 1, explanation: 'Volume lonjakan tanpa katalis fundamental yang jelas adalah sinyal klasik manipulasi harga.' }
+        },
+        {
+            id: 3, xpReward: 150,
+            title: 'Cash Flow vs Net Profit',
+            description: 'Kenapa perusahaan laba tapi bisa bangkrut? Pelajari bedanya.',
+            status: 'in_progress',
+            content: `Banyak investor pemula terjebak melihat Net Profit (Laba Bersih) yang meroket, lalu buru-buru membeli sahamnya. Padahal, ada metrik yang lebih krusial: Operating Cash Flow (Arus Kas Operasi).\n\nKenapa ini penting?\nNet Profit bisa dimanipulasi secara akuntansi. Tapi Cash Flow adalah uang tunai riil yang masuk ke rekening bank perusahaan.\n\nJika Net Profit positif tapi Operating Cash Flow negatif berulang kali, artinya perusahaan kesulitan menagih utang pelanggan. Ingat: Cash is King! Perusahaan bangkrut bukan karena tidak cetak laba, tapi karena kehabisan uang tunai.`,
+            quiz: { question: 'Perusahaan mencetak Laba Bersih Rp 100M tapi Arus Kas Operasi minus Rp 50M. Apa indikasi terkuatnya?', options: ['Perusahaan sangat sehat karena labanya besar.', 'Perusahaan melakukan banyak investasi.', 'Penjualan tinggi tapi pelanggan belum membayar (banyak piutang).', 'Perusahaan siap membagikan dividen besar.'], correctAnswer: 2, explanation: 'Laba dicatat saat transaksi terjadi meski uang belum diterima. Arus kas negatif artinya uang riil belum masuk perusahaan.' }
+        },
+        {
+            id: 4, xpReward: 150,
+            title: 'Membaca Debt-to-Equity Ratio (DER)',
+            description: 'Berapa banyak utang yang aman untuk sebuah perusahaan?',
+            status: 'locked',
+            content: `Debt-to-Equity Ratio (DER) mengukur seberapa besar perusahaan bergantung pada utang dibanding modal sendiri.\n\nRumus: DER = Total Utang / Total Ekuitas\n\nCara Baca:\n- DER < 1x = Lebih banyak modal sendiri. Relatif aman.\n- DER 1-2x = Wajar, tergantung sektornya.\n- DER > 2x = Utang dominan. Berisiko, terutama saat suku bunga naik.\n\nPerhatikan Sektor: Bank dan infrastruktur wajar memiliki DER tinggi. Tapi untuk ritel atau teknologi, DER tinggi adalah sinyal bahaya.`,
+            quiz: { question: 'Perusahaan ritel memiliki DER 3.5x. Bagaimana penilaian Anda?', options: ['Sangat sehat, utang berarti ekspansi bisnis', 'Normal untuk semua jenis perusahaan', 'Berisiko tinggi, utang terlalu besar bagi sektor ritel', 'Tidak ada hubungannya dengan risiko investasi'], correctAnswer: 2, explanation: 'Sektor ritel idealnya memiliki DER rendah. DER 3.5x sangat tinggi dan meningkatkan risiko gagal bayar.' }
+        },
+        {
+            id: 5, xpReward: 200,
+            title: 'Price-to-Earnings (PER): Mahal atau Murah?',
+            description: 'Apakah saham ini wajar dihargai sesuai labanya?',
+            status: 'locked',
+            content: `Price-to-Earnings Ratio (PER) adalah cara paling populer untuk menilai apakah harga saham wajar.\n\nRumus: PER = Harga Saham / Laba Per Saham (EPS)\n\nCara Baca:\n- PER rendah (< 10x) = Saham murah, tapi cek kenapa — bisa jadi ada masalah (value trap).\n- PER wajar (10-25x) = Normal untuk perusahaan mature.\n- PER tinggi (> 30x) = Pasar berharap pertumbuhan tinggi. Beresiko kalau harapan tidak terpenuhi.\n\nTrap yang sering terjadi: Investor membeli saham PER rendah dikira murah, padahal earnings-nya sedang turun.`,
+            quiz: { question: 'Saham A memiliki PER 5x, jauh di bawah rata-rata industri 20x. Apa yang sebaiknya dilakukan?', options: ['Langsung beli, pasti murah dan bagus', 'Investigasi kenapa PER-nya sangat rendah sebelum membeli', 'Hindari mutlak, PER rendah selalu tanda masalah', 'PER tidak penting untuk diperhatikan'], correctAnswer: 1, explanation: 'PER rendah bisa jadi value opportunity, tapi bisa juga "value trap". Selalu investigasi penyebabnya terlebih dahulu.' }
+        },
+        {
+            id: 6, xpReward: 200,
+            title: 'Strategi Diversifikasi Portofolio',
+            description: 'Jangan taruh semua telur di satu keranjang — tapi seberapa banyak?',
+            status: 'locked',
+            content: `Diversifikasi adalah cara mengurangi risiko dengan menyebarkan investasi ke berbagai aset atau sektor.\n\nAturan Dasar:\n- Jangan investasikan lebih dari 20% portofolio di satu saham.\n- Sebar ke minimal 3-5 sektor berbeda (bank, consumer goods, energi, dll).\n- Pertimbangkan diversifikasi aset: saham, obligasi, reksa dana.\n\nDiversifikasi Berlebihan juga Berbahaya: 15-20 saham sudah cukup untuk mengurangi unsystematic risk secara signifikan. Lebih dari itu, manfaat menurun dramatis.\n\nPilih aset yang tidak bergerak searah (korelasi rendah) agar saling menyeimbangkan.`,
+            quiz: { question: 'Berapa jumlah saham yang ideal untuk diversifikasi efektif?', options: ['1-3 saham saja agar bisa fokus', '5-10 saham', '15-20 saham', 'Lebih dari 50 saham'], correctAnswer: 2, explanation: 'Penelitian menunjukkan 15-20 saham sudah cukup mengurangi risiko spesifik. Lebih dari itu, manfaat diversifikasi menurun dramatis.' }
+        },
+        {
+            id: 7, xpReward: 250,
+            title: 'Red Flags di Laporan Keuangan',
+            description: 'Kenali tanda bahaya sebelum terlambat.',
+            status: 'locked',
+            content: `Laporan keuangan quarterly (Q) adalah jendela terpenting untuk menilai kesehatan perusahaan. Berikut red flags yang harus dicermati:\n\n1. Penurunan Gross Margin konsisten — daya saing menurun atau biaya produksi membengkak.\n\n2. Piutang tumbuh lebih cepat dari revenue — tanda perusahaan "memaksa" penjualan kredit.\n\n3. Beban bunga > 30% operating profit — utang sudah di level berbahaya.\n\n4. Auditor memberikan Qualified Opinion — ini sinyal paling serius, auditor meragukan kewajaran laporan.\n\n5. Pergantian auditor mendadak sebelum laporan tahunan dirilis.`,
+            quiz: { question: 'Mana dari berikut ini yang merupakan red flag paling serius dari laporan keuangan?', options: ['Revenue tumbuh 10% per tahun', 'Auditor memberikan Qualified Opinion pada laporan tahunan', 'Perusahaan menambah kapasitas produksi', 'Dividen naik 5% dibanding tahun lalu'], correctAnswer: 1, explanation: 'Qualified Opinion dari auditor berarti ada ketidakwajaran material yang tidak bisa dikonfirmasi — ini sinyal bahaya tertinggi.' }
+        },
+        {
+            id: 8, xpReward: 300,
+            title: 'Psikologi Investasi: Hindari Bias Kognitif',
+            description: 'Musuh terbesar investor bukan pasar, tapi diri sendiri.',
+            status: 'locked',
+            content: `Bias kognitif adalah jebakan mental yang membuat keputusan investasi menjadi tidak rasional.\n\n1. FOMO (Fear of Missing Out): Membeli saham karena harganya sudah naik dan takut ketinggalan.\n\n2. Loss Aversion: Menahan saham yang sudah rugi besar karena tidak mau merealisasi kerugian.\n\n3. Confirmation Bias: Hanya mencari informasi yang mendukung opini sendiri.\n\n4. Overconfidence: Merasa paling tahu setelah beberapa kali menang besar.\n\nSolusi: Buat Investment Thesis tertulis sebelum membeli, tentukan target harga dan stop loss di awal, dan review berkala dengan data objektif.`,
+            quiz: { question: 'Investor mempertahankan saham rugi 40% karena yakin "pasti naik lagi" tanpa data baru. Bias apa ini?', options: ['FOMO (Fear of Missing Out)', 'Overconfidence Bias', 'Loss Aversion', 'Anchoring Bias'], correctAnswer: 2, explanation: 'Loss Aversion — kita secara psikologis lebih takut pada kerugian daripada kesenangan profit, membuat kita menahan aset rugi terlalu lama.' }
+        },
     ];
+
+    // Derive status based on completedIds — each lesson unlocks the next
+    const lessons = allLessons.map((lesson, idx) => ({
+        ...lesson,
+        status: completedIds.includes(lesson.id)
+            ? 'completed'
+            : idx > 0 && !completedIds.includes(allLessons[idx - 1].id)
+                ? 'locked'
+                : lesson.status,
+    }));
 
     const handleLessonComplete = () => {
         if (!selectedLesson) return;
+        setCompletedIds(prev => [...prev, selectedLesson.id]);
         setPoints(prev => Math.min(prev + selectedLesson.xpReward, pointsToNextLevel));
         if (points + selectedLesson.xpReward >= pointsToNextLevel) {
             setLevel(prev => prev + 1);
@@ -168,59 +218,39 @@ Jika Net Profit positif tapi Operating Cash Flow negatif berulang kali, artinya 
                     <div className="bg-surface rounded-xl border border-border shadow-sm p-5 relative">
                         <div className="absolute left-7 top-8 bottom-8 w-px bg-surface-active"></div>
 
-                        <div className="flex gap-4 mb-6 relative z-10">
-                            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center mt-1 outline outline-4 outline-surface z-10">
-                                <CheckCircle2 size={12} className="text-white" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-sm text-foreground">Understanding "Notasi Khusus"</h4>
-                                <p className="text-xs text-foreground-muted mt-1">Learnt what BEI special notations mean for your portfolio risks.</p>
-                                <span className="inline-block mt-2 px-2 py-0.5 bg-surface-active text-foreground-muted rounded text-[10px] font-bold">+50 XP</span>
-                            </div>
-                        </div>
+                        {/* Dynamic Lessons */}
+                        <div className="flex flex-col gap-4">
 
-                        <div className="flex gap-4 mb-6 relative z-10">
-                            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center mt-1 outline outline-4 outline-surface z-10">
-                                <CheckCircle2 size={12} className="text-white" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-sm text-foreground">Spotting Pump & Dump</h4>
-                                <p className="text-xs text-foreground-muted mt-1">Identified suspicious volume spikes using Truth Scanner.</p>
-                                <span className="inline-block mt-2 px-2 py-0.5 bg-surface-active text-foreground-muted rounded text-[10px] font-bold">+100 XP</span>
-                            </div>
-                        </div>
-
-                        {/* Map Dynamic Lessons */}
-                        {lessons.map((lesson) => (
-                            <div
-                                key={lesson.id}
-                                onClick={() => {
-                                    if (lesson.status !== 'locked') setSelectedLesson(lesson);
-                                }}
-                                className={`flex gap-4 relative z-10 transition-all ${lesson.status === 'locked' ? 'opacity-50 grayscale cursor-not-allowed' : 'cursor-pointer hover:bg-surface-hover p-2 -ml-2 rounded-xl group'}`}
-                            >
-                                <div className={`w-6 h-6 rounded-full flex items-center justify-center mt-1 outline outline-4 outline-surface z-10 shrink-0 ${lesson.status === 'completed' ? 'bg-primary text-white' : lesson.status === 'in_progress' ? 'bg-primary/20 border-2 border-primary text-primary animate-pulse' : 'bg-surface-hover border-2 border-surface-active text-foreground-muted'}`}>
-                                    {lesson.status === 'completed' && <CheckCircle2 size={14} />}
-                                    {lesson.status === 'in_progress' && <PlayCircle size={14} />}
-                                    {lesson.status === 'locked' && <Lock size={12} />}
-                                </div>
-                                <div className="flex-1">
-                                    <h4 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">{lesson.title}</h4>
-                                    <p className="text-xs text-foreground-muted mt-1 leading-relaxed">{lesson.description}</p>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${lesson.status === 'completed' ? 'bg-surface-active text-foreground-muted' : 'border border-primary/30 text-primary bg-primary/5'}`}>
-                                            {lesson.status === 'completed' ? 'Selesai' : 'Mulai Pelajaran'}
-                                        </span>
-                                        <span className="flex items-center gap-1 text-[10px] font-bold text-warning bg-warning/10 px-2 py-0.5 rounded">
-                                            <Star size={10} className="fill-warning" /> +{lesson.xpReward} XP
-                                        </span>
+                            {lessons.map((lesson) => (
+                                <div
+                                    key={lesson.id}
+                                    onClick={() => {
+                                        if (lesson.status !== 'locked') setSelectedLesson(lesson);
+                                    }}
+                                    className={`flex gap-4 relative z-10 transition-all ${lesson.status === 'locked' ? 'opacity-50 grayscale cursor-not-allowed' : 'cursor-pointer hover:bg-surface-hover p-2 -ml-2 rounded-xl group'}`}
+                                >
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center mt-1 outline outline-4 outline-surface z-10 shrink-0 ${lesson.status === 'completed' ? 'bg-primary text-white' : lesson.status === 'in_progress' ? 'bg-primary/20 border-2 border-primary text-primary animate-pulse' : 'bg-surface-hover border-2 border-surface-active text-foreground-muted'}`}>
+                                        {lesson.status === 'completed' && <CheckCircle2 size={14} />}
+                                        {lesson.status === 'in_progress' && <PlayCircle size={14} />}
+                                        {lesson.status === 'locked' && <Lock size={12} />}
                                     </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">{lesson.title}</h4>
+                                        <p className="text-xs text-foreground-muted mt-1 leading-relaxed">{lesson.description}</p>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${lesson.status === 'completed' ? 'bg-surface-active text-foreground-muted' : 'border border-primary/30 text-primary bg-primary/5'}`}>
+                                                {lesson.status === 'completed' ? 'Selesai' : 'Mulai Pelajaran'}
+                                            </span>
+                                            <span className="flex items-center gap-1 text-[10px] font-bold text-warning bg-warning/10 px-2 py-0.5 rounded">
+                                                <Star size={10} className="fill-warning" /> +{lesson.xpReward} XP
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <ChevronRight size={18} className="text-foreground-muted self-center opacity-0 group-hover:opacity-100 transition-opacity -ml-4" />
                                 </div>
-                                <ChevronRight size={18} className="text-foreground-muted self-center opacity-0 group-hover:opacity-100 transition-opacity -ml-4" />
-                            </div>
-                        ))}
+                            ))}
 
-                    </div>
+                        </div>
                 </section>
 
             </div>
