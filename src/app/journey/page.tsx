@@ -251,6 +251,8 @@ export default function JourneyPage() {
                             ))}
 
                         </div>
+
+                    </div>
                 </section>
 
             </div>
