@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import { ShieldAlert, CheckCircle2, MessageSquarePlus, Bell, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function NotificationsPage() {
+    const [allRead, setAllRead] = useState(false);
     return (
         <div className="flex flex-col min-h-screen bg-background pb-24">
             {/* Header Area */}
@@ -13,13 +17,13 @@ export default function NotificationsPage() {
                     <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
                         <Bell size={20} className="text-primary" /> Notifications
                     </h1>
-                    <p className="text-xs text-foreground-muted mt-1">You have 2 unread messages</p>
+                    <p className="text-xs text-foreground-muted mt-1">{allRead ? "All caught up!" : "You have 2 unread messages"}</p>
                 </div>
             </header>
 
             <div className="p-5 flex flex-col gap-3">
                 {/* Notification Items */}
-                <div className="p-4 rounded-2xl bg-danger/5 border border-danger/20 flex gap-4 relative overflow-hidden group hover:bg-danger/10 transition-colors shadow-sm">
+                <div className={`p-4 rounded-2xl border flex gap-4 relative overflow-hidden group transition-colors shadow-sm ${allRead ? 'bg-surface opacity-60 border-border' : 'bg-danger/5 border-danger/20 hover:bg-danger/10'}`}>
                     <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-danger"></div>
                     <div className="w-12 h-12 rounded-full bg-danger/10 text-danger flex items-center justify-center shrink-0">
                         <ShieldAlert size={24} />
@@ -32,9 +36,11 @@ export default function NotificationsPage() {
                         <p className="text-sm text-foreground-muted leading-relaxed">
                             Unusual pumping activity detected on <strong className="text-foreground">GOTO</strong>. Proceed with caution.
                         </p>
-                        <div className="mt-3">
-                            <button className="text-xs font-bold text-danger bg-danger/10 px-3 py-1.5 rounded-lg hover:bg-danger/20 transition-colors">Review Alert</button>
-                        </div>
+                        {!allRead && (
+                            <div className="mt-3">
+                                <button className="text-xs font-bold text-danger bg-danger/10 px-3 py-1.5 rounded-lg hover:bg-danger/20 transition-colors">Review Alert</button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -70,8 +76,12 @@ export default function NotificationsPage() {
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                    <button className="text-sm font-bold text-foreground-muted hover:text-foreground transition-colors px-4 py-2 rounded-full bg-surface-active hover:bg-surface-hover">
-                        Mark all as read
+                    <button
+                        onClick={() => setAllRead(true)}
+                        disabled={allRead}
+                        className="text-sm font-bold text-foreground-muted hover:text-foreground transition-colors px-4 py-2 rounded-full bg-surface-active hover:bg-surface-hover disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                        {allRead ? "All notifications read ✓" : "Mark all as read"}
                     </button>
                 </div>
 
