@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText, Search, ShieldAlert, AlertOctagon, CheckCircle2, ShieldQuestion, MessageSquarePlus } from "lucide-react";
+import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText, Search, ShieldAlert, AlertOctagon, CheckCircle2, ShieldQuestion, MessageSquarePlus, Sparkles } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ScanResult = {
     riskLevel: "Low" | "Moderate" | "High";
@@ -94,8 +96,41 @@ export default function TruthScorePage() {
     const toggleCard = (ticker: string) => {
         if (expandedCard === ticker) {
             setExpandedCard("");
+            // Optional: keep insight cached or clear it
         } else {
             setExpandedCard(ticker);
+        }
+    };
+
+    // --- INLINE INSIGHT STATE ---
+    const [insights, setInsights] = useState<Record<string, string>>({});
+    const [loadingInsights, setLoadingInsights] = useState<Record<string, boolean>>({});
+
+    const generateInsight = async (stock: typeof DUMMY_STOCKS[0]) => {
+        if (insights[stock.ticker] || loadingInsights[stock.ticker]) return;
+
+        setLoadingInsights(prev => ({ ...prev, [stock.ticker]: true }));
+        try {
+            const prompt = `Berikan ringkasan singkat (maksimal 3 paragraf) mengenai fundamental saham ${stock.ticker} (${stock.name}) berdasarkan data berikut: Truth Score ${stock.score}/100, Net Profit ${stock.netProfit}, Cash Flow ${stock.cashFlow}, Status Laporan Keuangan: ${stock.status}. Tolong berikan markdown formatting tebal/miring seperlunya.`;
+
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    messages: [{ role: "user", content: prompt }],
+                    mode: "copilot"
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+
+            setInsights(prev => ({ ...prev, [stock.ticker]: data.content }));
+        } catch (error) {
+            console.error("Failed to generate insight:", error);
+            setInsights(prev => ({ ...prev, [stock.ticker]: "*Gagal memuat insight dari AI. Silakan coba lagi nanti.*" }));
+        } finally {
+            setLoadingInsights(prev => ({ ...prev, [stock.ticker]: false }));
         }
     };
 
@@ -241,12 +276,41 @@ export default function TruthScorePage() {
                                                 <p className={`text-xs font-medium ${isWarning ? 'text-red-400' : 'text-blue-400'}`}>{stock.status}</p>
                                             </div>
 
-                                            <Link
-                                                href={`/chat?context=stock&ticker=${stock.ticker}&name=${encodeURIComponent(stock.name)}&score=${stock.score}`}
-                                                className="w-full flex items-center justify-center gap-2 bg-surface-active hover:bg-border text-foreground py-3 rounded-xl text-xs font-bold transition-colors"
-                                            >
-                                                <MessageSquarePlus size={16} /> Tanya AI Detailnya
-                                            </Link>
+                                            <div className="flex gap-2 w-full mt-4 flex-col sm:flex-row">
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); generateInsight(stock); }}
+                                                    disabled={loadingInsights[stock.ticker]}
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 py-3 rounded-xl text-xs font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {loadingInsights[stock.ticker] ? (
+                                                        <><span className="animate-spin text-lg leading-none">⟳</span> Menganalisis...</>
+                                                    ) : (
+                                                        <><Sparkles size={16} /> Insight Cepat (AI)</>
+                                                    )}
+                                                </button>
+
+                                                <Link
+                                                    href={`/chat?context=stock&ticker=${stock.ticker}&name=${encodeURIComponent(stock.name)}&score=${stock.score}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="flex-1 flex items-center justify-center gap-2 bg-surface-active hover:bg-border text-foreground py-3 rounded-xl text-xs font-bold transition-colors"
+                                                >
+                                                    <MessageSquarePlus size={16} /> Chat AI Detailnya
+                                                </Link>
+                                            </div>
+
+                                            {/* Render Inline Insight */}
+                                            {insights[stock.ticker] && (
+                                                <div className="mt-4 pt-4 border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-500">
+                                                    <div className="flex items-center gap-2 text-primary font-bold text-[10px] uppercase tracking-wider mb-2">
+                                                        <Sparkles size={14} /> AI Fundamental Insight
+                                                    </div>
+                                                    <div className="prose prose-sm max-w-none text-foreground prose-p:leading-relaxed prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-ul:list-outside prose-ul:ml-4 prose-li:marker:text-primary prose-headings:my-2 dark:prose-invert">
+                                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                            {insights[stock.ticker]}
+                                                        </ReactMarkdown>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>

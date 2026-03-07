@@ -177,7 +177,10 @@ export default function ChatPage() {
                                 </div>
                             )}
 
-                            <div className="prose prose-sm prose-invert max-w-none text-current leading-relaxed break-words">
+                            <div className={`prose prose-sm max-w-none break-words text-left prose-p:leading-relaxed prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-ul:list-outside prose-ul:ml-4 prose-li:marker:text-primary prose-headings:my-2 ${m.role === "user"
+                                    ? "prose-invert text-white prose-p:text-white prose-headings:text-white prose-strong:text-white prose-ul:text-white prose-li:text-white"
+                                    : "dark:prose-invert text-foreground prose-p:text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-ul:text-foreground prose-li:text-foreground"
+                                }`}>
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {m.content}
                                 </ReactMarkdown>
