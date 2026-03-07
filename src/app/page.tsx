@@ -78,7 +78,7 @@ export default function Home() {
             </div>
             <ChevronRight size={16} className="text-foreground-muted" />
           </Link>
-          <Link href="/scanner" className="bg-surface border border-border rounded-xl p-4 shadow-sm flex items-center justify-between hover:border-primary/50 transition-colors">
+          <Link href="/truth" className="bg-surface border border-border rounded-xl p-4 shadow-sm flex items-center justify-between hover:border-primary/50 transition-colors">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-warning/20 text-warning-dark dark:text-warning rounded-lg">
                 <TrendingDown size={20} />
@@ -93,7 +93,7 @@ export default function Home() {
         <section>
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-base font-bold text-foreground">Active Alerts</h3>
-            <Link href="/scanner" className="text-xs font-semibold text-primary hover:underline">
+            <Link href="/truth" className="text-xs font-semibold text-primary hover:underline">
               See All
             </Link>
           </div>
