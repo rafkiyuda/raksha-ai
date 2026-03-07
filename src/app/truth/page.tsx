@@ -51,6 +51,7 @@ const DUMMY_STOCKS = [
 export default function TruthScorePage() {
     const [activeTab, setActiveTab] = useState<"analysis" | "scanner">("analysis");
     const [expandedCard, setExpandedCard] = useState<string>("BBCA");
+    const [sortOrder, setSortOrder] = useState<"high" | "low">("high");
 
     // --- SCANNER STATE ---
     const [inputType, setInputType] = useState<"text" | "link">("text");
@@ -202,12 +203,15 @@ export default function TruthScorePage() {
                     <div className="p-5 flex flex-col gap-4">
                         <div className="flex items-center justify-between mb-1 px-1">
                             <h3 className="text-sm font-bold text-foreground-muted tracking-wide uppercase">Stock Analysis</h3>
-                            <button className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-active hover:bg-surface-hover rounded-md text-[10px] font-semibold text-foreground transition-colors">
-                                <ArrowDownUp size={12} /> Score High
+                            <button
+                                onClick={() => setSortOrder(prev => prev === "high" ? "low" : "high")}
+                                className="flex items-center gap-1 px-2.5 py-1.5 bg-surface-active hover:bg-surface-hover rounded-md text-[10px] font-semibold text-foreground transition-colors"
+                            >
+                                <ArrowDownUp size={12} /> Score {sortOrder === "high" ? "High ↓" : "Low ↑"}
                             </button>
                         </div>
 
-                        {DUMMY_STOCKS.map((stock) => {
+                        {[...DUMMY_STOCKS].sort((a, b) => sortOrder === "high" ? b.score - a.score : a.score - b.score).map((stock) => {
                             const isOpen = expandedCard === stock.ticker;
                             const isWarning = stock.riskLevel === "warning";
                             const strokeOffset = 132 - (132 * (stock.score / 100));
