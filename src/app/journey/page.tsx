@@ -275,48 +275,30 @@ export default function JourneyPage() {
                             </button>
                         </div>
 
-                        {/* Modal Body */}
+                        {/* Modal Body — scrollable content only */}
                         <div className="p-6 overflow-y-auto flex-1 hide-scrollbar">
 
                             {/* Step: Intro */}
                             {lessonStep === 'intro' && (
-                                <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div className="flex flex-col items-center text-center pt-4">
-                                        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 ring-8 ring-primary/5">
-                                            <Target size={48} />
-                                        </div>
-                                        <h2 className="text-2xl font-extrabold text-foreground mb-3">{selectedLesson.title}</h2>
-                                        <p className="text-sm text-foreground-muted mb-6 max-w-xs">{selectedLesson.description}</p>
-
-                                        <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-xl font-bold border border-warning/20">
-                                            <Star size={18} className="fill-warning" />
-                                            Reward: +{selectedLesson.xpReward} XP
-                                        </div>
+                                <div className="flex flex-col items-center text-center pt-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 ring-8 ring-primary/5">
+                                        <Target size={48} />
                                     </div>
-                                    <button
-                                        onClick={() => setLessonStep('reading')}
-                                        className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-                                    >
-                                        Mulai Membaca <ChevronRight size={18} />
-                                    </button>
+                                    <h2 className="text-2xl font-extrabold text-foreground mb-3">{selectedLesson.title}</h2>
+                                    <p className="text-sm text-foreground-muted mb-6 max-w-xs">{selectedLesson.description}</p>
+                                    <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-xl font-bold border border-warning/20">
+                                        <Star size={18} className="fill-warning" />
+                                        Reward: +{selectedLesson.xpReward} XP
+                                    </div>
                                 </div>
                             )}
 
                             {/* Step: Reading */}
                             {lessonStep === 'reading' && (
-                                <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300">
+                                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                                     <h2 className="text-xl font-extrabold text-foreground mb-4 leading-tight">{selectedLesson.title}</h2>
-                                    <div className="text-sm text-foreground-muted leading-relaxed whitespace-pre-line flex-1">
+                                    <div className="text-sm text-foreground-muted leading-relaxed whitespace-pre-line">
                                         {selectedLesson.content}
-                                    </div>
-
-                                    <div className="pt-6 mt-6 border-t border-border/50">
-                                        <button
-                                            onClick={() => setLessonStep('quiz')}
-                                            className="w-full py-4 rounded-xl bg-surface-active border border-border hover:border-primary/50 text-foreground font-bold transition-all hover:bg-primary/5 hover:text-primary active:scale-95 flex items-center justify-center gap-2"
-                                        >
-                                            Saya Sudah Paham. Lanjut Kuis! <PlayCircle size={18} />
-                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -372,35 +354,9 @@ export default function JourneyPage() {
                                             <p className="text-xs opacity-90 leading-relaxed">{selectedLesson.quiz.explanation}</p>
                                         </div>
                                     )}
-
-                                    <div className="pt-6 mt-4 border-t border-border/50">
-                                        {!isQuizSubmitted ? (
-                                            <button
-                                                onClick={() => setIsQuizSubmitted(true)}
-                                                disabled={quizAnswer === null}
-                                                className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark disabled:bg-surface-active disabled:text-foreground-muted disabled:opacity-50 text-white font-bold transition-transform active:scale-95 disabled:active:scale-100 shadow-lg"
-                                            >
-                                                Jawab
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() => {
-                                                    if (quizAnswer === selectedLesson.quiz.correctAnswer) {
-                                                        handleLessonComplete();
-                                                    } else {
-                                                        // Retry
-                                                        setIsQuizSubmitted(false);
-                                                        setQuizAnswer(null);
-                                                    }
-                                                }}
-                                                className="w-full py-4 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-bold transition-transform active:scale-95 shadow-lg flex items-center justify-center gap-2"
-                                            >
-                                                {quizAnswer === selectedLesson.quiz.correctAnswer ? "Klaim XP Saya" : "Coba Lagi"}
-                                            </button>
-                                        )}
-                                    </div>
                                 </div>
                             )}
+
 
                             {/* Step: Completed */}
                             {lessonStep === 'completed' && (
@@ -414,27 +370,77 @@ export default function JourneyPage() {
                                     <h2 className="text-3xl font-extrabold text-foreground mb-2">Luar Biasa!</h2>
                                     <p className="text-foreground-muted text-sm max-w-xs mb-6">Anda telah menyelesaikan modul &quot;{selectedLesson.title}&quot; dan mendapatkan poin XP.</p>
 
-                                    <div className="flex items-center gap-3 bg-surface-active border border-border px-5 py-3 rounded-2xl mb-8">
+                                    <div className="flex items-center gap-3 bg-surface-active border border-border px-5 py-3 rounded-2xl">
                                         <Star size={24} className="fill-warning text-warning" />
                                         <div className="text-left flex flex-col">
                                             <span className="text-xs font-bold text-foreground-muted uppercase tracking-wider">Reward Earned</span>
                                             <span className="text-xl font-black text-warning">+{selectedLesson.xpReward} XP</span>
                                         </div>
                                     </div>
-
-                                    <button
-                                        onClick={resetModal}
-                                        className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold transition-transform active:scale-95 shadow-lg shadow-primary/20"
-                                    >
-                                        Kembali ke Journey
-                                    </button>
                                 </div>
                             )}
 
+
+                        </div>
+
+                        {/* Pinned Footer */}
+                        <div className="px-6 py-4 border-t border-border/50 bg-surface shrink-0">
+                            {lessonStep === 'intro' && (
+                                <button
+                                    onClick={() => setLessonStep('reading')}
+                                    className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                                >
+                                    Mulai Membaca <ChevronRight size={18} />
+                                </button>
+                            )}
+                            {lessonStep === 'reading' && (
+                                <button
+                                    onClick={() => setLessonStep('quiz')}
+                                    className="w-full py-4 rounded-xl bg-surface-active border border-border hover:border-primary/50 text-foreground font-bold transition-all hover:bg-primary/5 hover:text-primary active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    Saya Sudah Paham. Lanjut Kuis! <PlayCircle size={18} />
+                                </button>
+                            )}
+                            {lessonStep === 'quiz' && (
+                                <>
+                                    {!isQuizSubmitted ? (
+                                        <button
+                                            onClick={() => setIsQuizSubmitted(true)}
+                                            disabled={quizAnswer === null}
+                                            className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark disabled:bg-surface-active disabled:text-foreground-muted disabled:opacity-50 text-white font-bold transition-transform active:scale-95 disabled:active:scale-100 shadow-lg"
+                                        >
+                                            Jawab
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => {
+                                                if (quizAnswer === selectedLesson.quiz.correctAnswer) {
+                                                    handleLessonComplete();
+                                                } else {
+                                                    setIsQuizSubmitted(false);
+                                                    setQuizAnswer(null);
+                                                }
+                                            }}
+                                            className="w-full py-4 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-bold transition-transform active:scale-95 shadow-lg flex items-center justify-center gap-2"
+                                        >
+                                            {quizAnswer === selectedLesson.quiz.correctAnswer ? "Klaim XP Saya 🏆" : "Coba Lagi 🔄"}
+                                        </button>
+                                    )}
+                                </>
+                            )}
+                            {lessonStep === 'completed' && (
+                                <button
+                                    onClick={resetModal}
+                                    className="w-full py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold transition-transform active:scale-95 shadow-lg shadow-primary/20"
+                                >
+                                    Kembali ke Journey
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 }
