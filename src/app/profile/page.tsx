@@ -253,7 +253,7 @@ export default function ProfilePage() {
             {/* Add Portfolio Modal */}
             {
                 isAddPortfolioModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                         <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
                             <div className="p-5 border-b border-border/50 flex justify-between items-center">
                                 <div>
@@ -371,7 +371,7 @@ export default function ProfilePage() {
             {/* Risk Profile Modal */}
             {
                 isRiskModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                         <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
                             <div className="p-5 border-b border-border/50 flex justify-between items-center">
                                 <div>
@@ -439,7 +439,7 @@ export default function ProfilePage() {
             {/* Linked Brokerage Modal */}
             {
                 isBrokerageModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                         <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
                             <div className="p-5 border-b border-border/50 flex justify-between items-center">
                                 <div>
@@ -482,7 +482,7 @@ export default function ProfilePage() {
             {/* Smart Notification Modal */}
             {
                 isNotificationModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                         <div className="bg-surface w-full sm:w-[400px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
                             <div className="p-5 border-b border-border/50 flex justify-between items-center">
                                 <div>
