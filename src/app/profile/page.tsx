@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X } from "lucide-react";
 
 export default function ProfilePage() {
@@ -54,7 +55,7 @@ export default function ProfilePage() {
                         </div>
 
                         {/* Notification Filter */}
-                        <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <Link href="/chat?topic=Smart%20Notification%20Settings" className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <BellOff size={20} />
@@ -65,7 +66,7 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
-                        </div>
+                        </Link>
 
                     </div>
                 </section>
@@ -83,7 +84,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden">
-                        <div className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <Link href="/chat?topic=Portfolio%20Review" className="flex items-center justify-between p-4 border-b border-border/50 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <Wallet size={20} />
@@ -97,9 +98,9 @@ export default function ProfilePage() {
                                 <span className="text-xs font-bold text-primary">Active</span>
                                 <ChevronRight size={18} className="text-foreground-muted" />
                             </div>
-                        </div>
+                        </Link>
 
-                        <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
+                        <Link href="/chat?topic=Change%20Risk%20Profile" className="flex items-center justify-between p-4 cursor-pointer hover:bg-surface-hover transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 rounded-lg bg-surface-active text-foreground">
                                     <Settings size={20} />
@@ -110,7 +111,7 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
-                        </div>
+                        </Link>
                     </div>
                 </section>
 
