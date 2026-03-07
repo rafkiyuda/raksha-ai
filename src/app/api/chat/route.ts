@@ -13,8 +13,10 @@ export async function POST(req: Request) {
             systemInstruction: "Kamu adalah RAKSHA AI, co-pilot edukasi finansial untuk investor ritel Gen Z dan Milenial di Indonesia. Tujuanmu adalah meningkatkan literasi finansial, menjelaskan risiko (seperti Truth Score, Notasi Khusus BEI), dan memberikan wawasan yang objektif. Jawab dengan bahasa Indonesia yang santai, mudah dimengerti, namun tegas soal manajemen risiko. JANGAN berikan rekomendasi beli/jual langsung. Jika user membahas saham berisiko tinggi (arus kas negatif, notasi khusus), peringatkan mereka dan sarankan diversifikasi. Jika ditanya soal saham gorengan (pump and dump) atau finfluencer yang hype, ingatkan untuk selalu cross-check data fundamental."
         });
 
-        // Format history for Gemini SDK
-        const history = messages.slice(0, -1).map((m: any) => ({
+        // Ensure history only contains valid user/model alternation and starts with user
+        let filteredMessages = messages.slice(0, -1).filter((m: any) => m.id !== "1"); // Exclude our hardcoded greeting
+
+        const history = filteredMessages.map((m: any) => ({
             role: m.role === "user" ? "user" : "model",
             parts: [{ text: m.content }]
         }));
