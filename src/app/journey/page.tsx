@@ -259,7 +259,7 @@ export default function JourneyPage() {
 
             {/* Interactive Lesson Modal */}
             {selectedLesson && (
-                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="bg-surface w-full sm:w-[500px] h-[92vh] sm:h-[620px] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-500">
 
                         {/* Modal Header */}
