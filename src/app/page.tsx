@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet } from "lucide-react";
+import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet, Lock, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -117,48 +117,138 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Market Movers */}
+        {/* Market Movers / Watchlist */}
         <section>
-          <h3 className="text-base font-bold text-foreground mb-3">Your Watchlist</h3>
-          <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center p-3 bg-surface rounded-xl border border-border hover:border-border/80 transition-colors cursor-pointer shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-active flex items-center justify-center font-bold text-xs text-foreground">
-                  BBCA
-                </div>
-                <div>
-                  <p className="font-semibold text-sm text-foreground">Bank Central Asia</p>
-                  <p className="text-xs text-foreground-muted">Safe-to-Trade</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-sm">Rp 9,800</p>
-                <p className="text-xs font-bold text-primary flex items-center justify-end">
-                  +1.2%
-                </p>
-              </div>
-            </div>
+          <h3 className="text-base font-bold text-foreground mb-3">Your Watchlist Insights</h3>
+          <div className="flex flex-col gap-3">
 
-            <div className="flex justify-between items-center p-3 bg-surface rounded-xl border border-border hover:border-border/80 transition-colors cursor-pointer shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-active flex items-center justify-center font-bold text-xs text-foreground">
-                  BUMI
-                </div>
-                <div>
-                  <p className="font-semibold text-sm text-foreground">Bumi Resources</p>
-                  <p className="text-xs text-danger">Special Notation</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-sm">Rp 120</p>
-                <p className="text-xs font-bold text-danger flex items-center justify-end">
-                  -3.4%
-                </p>
-              </div>
-            </div>
+            <WatchlistCard
+              ticker="GOTO"
+              name="GoTo Gojek Tokopedia"
+              change="-4.2%"
+              riskLevel={95}
+              riskTag="HIGH RISK"
+              riskIcon={Lock}
+              riskClass="danger"
+              statusMessage="Special Monitoring - High Volatility"
+              lastUpdated="2 min ago"
+              alertMessage="Risk Alert: Protective Recommendation Active"
+              insight="GOTO menunjukkan volatilitas sangat tinggi dalam 24 jam terakhir. Sentimen sosial dipenuhi hype yang tidak wajar, sementara rasio profitabilitas menurut laporan keuangan belum sejalan dengan ekspektasi. Pembelian agresif sangat tidak disarankan."
+            />
+
+            <WatchlistCard
+              ticker="BUKA"
+              name="Bukalapak.com"
+              change="-1.8%"
+              riskLevel={72}
+              riskTag="REVIEW"
+              riskIcon={TrendingDown}
+              riskClass="warning"
+              statusMessage="Under Review - Sentiment Discrepancy"
+              lastUpdated="15 min ago"
+              insight="Terdeteksi adanya pergerakan harga anomali meskipun sentimen berita cenderung netral. Sistem RAKSHA sedang mereview potensi aksi institusional vs ritel. Hindari mengambil posisi besar dengan tergesa-gesa."
+            />
+
+            <WatchlistCard
+              ticker="BBCA"
+              name="Bank Central Asia"
+              change="+1.2%"
+              riskLevel={12}
+              riskTag="SAFE"
+              riskIcon={CheckCircle2}
+              riskClass="primary"
+              statusMessage="Clear - Solid Fundamentals"
+              lastUpdated="1 hr ago"
+              insight="BCA mempertahankan performa fundamental solid tanpa fluktuasi media sosial yang mencurigakan. Pertumbuhan aset stabil. Profil risiko sangat terkendali dan cocok untuk alokasi porsi utama (Core Portfolio)."
+            />
+
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+// Watchlist Card Component with Accordion
+function WatchlistCard({
+  ticker, name, change, riskLevel, riskTag, riskIcon: Icon, riskClass, statusMessage, lastUpdated, alertMessage, insight
+}: any) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const colors: Record<string, string> = {
+    danger: "text-danger bg-danger/10 border-danger/30 shadow-danger/20",
+    warning: "text-warning bg-warning/10 border-warning/30 shadow-warning/20",
+    primary: "text-primary bg-primary/10 border-primary/30 shadow-primary/20",
+  };
+  const bgColors: Record<string, string> = {
+    danger: "bg-danger",
+    warning: "bg-warning",
+    primary: "bg-primary",
+  };
+  const riskColor = colors[riskClass] || colors.primary;
+  const riskBg = bgColors[riskClass] || bgColors.primary;
+
+  return (
+    <div className={`bg-surface rounded-xl border ${riskClass === 'danger' ? 'border-danger/30' : riskClass === 'warning' ? 'border-warning/30' : 'border-primary/30'} shadow-sm overflow-hidden transition-all`}>
+      <div
+        className="p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-surface-active flex items-center justify-center font-bold text-xs text-foreground shrink-0">
+              {ticker}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-0.5">
+                <h4 className="font-bold text-sm text-foreground">{ticker}</h4>
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 ${riskColor.split(' ')[0]} ${riskColor.split(' ')[1]}`}>
+                  <Icon size={10} /> {riskTag}
+                </span>
+              </div>
+              <p className="text-xs text-foreground-muted">{name}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className={`text-xs font-bold flex items-center justify-end ${change.startsWith('+') ? 'text-primary' : 'text-danger'}`}>
+              {change}
+              <ChevronRight size={14} className={`ml-1 text-foreground-muted transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-3">
+          <div className="flex justify-between text-xs mb-1.5">
+            <span className="text-foreground-muted font-medium">Risk Level</span>
+            <span className="font-bold text-foreground">{riskLevel}/100</span>
+          </div>
+          <div className="h-1.5 w-full bg-surface-active rounded-full overflow-hidden">
+            <div className={`h-full rounded-full ${riskBg}`} style={{ width: `${riskLevel}%` }}></div>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium text-foreground mb-1">{statusMessage}</p>
+          <p className="text-[10px] text-foreground-muted">Last updated: {lastUpdated}</p>
+        </div>
+      </div>
+
+      {/* Accordion Content */}
+      {isOpen && (
+        <div className="px-4 py-3 bg-surface-hover border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
+          <p className="text-xs text-foreground leading-relaxed pr-2">
+            <strong className="text-foreground font-semibold">AI Insight:</strong> {insight}
+          </p>
+        </div>
+      )}
+
+      {/* Alert Block */}
+      {alertMessage && (
+        <div className="bg-danger/5 p-3 flex items-center justify-center gap-2 border-t border-danger/10">
+          <ShieldAlert size={14} className="text-danger" />
+          <p className="text-xs font-semibold text-danger">{alertMessage}</p>
+        </div>
+      )}
     </div>
   );
 }
