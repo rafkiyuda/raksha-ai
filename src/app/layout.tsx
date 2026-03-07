@@ -36,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-100 dark:bg-black font-sans flex justify-center min-h-[100dvh]`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light">
           <div className="w-full max-w-md bg-background text-foreground min-h-[100dvh] relative shadow-2xl overflow-x-hidden border-x border-border">
             <main>
               {children}
