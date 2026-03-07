@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X } from "lucide-react";
+import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2 } from "lucide-react";
 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
@@ -10,6 +10,46 @@ export default function ProfilePage() {
     const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isBrokerageModalOpen, setIsBrokerageModalOpen] = useState(false);
     const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
+
+    // Upload State
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadedData, setUploadedData] = useState<any[] | null>(null);
+    const [uploadError, setUploadError] = useState("");
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setUploadError("");
+        setUploadedData(null);
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("/api/ocr", {
+                method: "POST",
+                body: formData,
+            });
+
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.error || "Gagal memproses gambar");
+
+            if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+                setUploadedData(json.data);
+            } else {
+                setUploadError("Gagal mendeteksi portofolio yang valid di dalam gambar.");
+            }
+        } catch (error: any) {
+            setUploadError(error.message);
+        } finally {
+            setIsUploading(false);
+            // reset file input
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    };
 
     return (
         <div className="flex flex-col min-h-screen bg-background pb-24">
@@ -144,36 +184,99 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="p-5 flex flex-col gap-4">
-                            {/* Option 1: Open API */}
-                            <button className="flex items-start gap-4 p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none">
-                                <div className="p-2.5 rounded-full bg-primary/10 text-primary mt-1 shrink-0">
-                                    <LinkIcon size={20} />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                        Auto Connect (Open API)
-                                        <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Recommended</span>
-                                    </h4>
-                                    <p className="text-xs text-foreground-muted mt-1 leading-relaxed">
-                                        Hubungkan langsung dari aplikasi sekuritas resmi (Ajaib, Bibit, dll). Data terupdate otomatis secara real-time.
-                                    </p>
-                                </div>
-                            </button>
+                            {!uploadedData ? (
+                                <>
+                                    {/* Option 1: Open API */}
+                                    <button className="flex items-start gap-4 p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none w-full">
+                                        <div className="p-2.5 rounded-full bg-primary/10 text-primary mt-1 shrink-0">
+                                            <LinkIcon size={20} />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                                Auto Connect (Open API)
+                                                <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Recommended</span>
+                                            </h4>
+                                            <p className="text-xs text-foreground-muted mt-1 leading-relaxed">
+                                                Hubungkan langsung dari aplikasi sekuritas resmi (Ajaib, Bibit, dll). Data terupdate otomatis secara real-time.
+                                            </p>
+                                        </div>
+                                    </button>
 
-                            {/* Option 2: OCR / Manual */}
-                            <button className="flex items-start gap-4 p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none">
-                                <div className="p-2.5 rounded-full bg-surface text-foreground-muted mt-1 shrink-0">
-                                    <FileText size={20} />
+                                    {/* Option 2: OCR / Manual */}
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileUpload}
+                                    />
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={isUploading}
+                                        className={`flex items-start gap-4 p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none w-full ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                    >
+                                        <div className="p-2.5 rounded-full bg-surface text-foreground-muted mt-1 shrink-0">
+                                            {isUploading ? <Loader2 size={20} className="animate-spin text-primary" /> : <UploadCloud size={20} />}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                                {isUploading ? "Menganalisis Gambar OCR..." : "Privacy Mode (Upload OCR)"}
+                                            </h4>
+                                            <p className="text-xs text-foreground-muted mt-1 leading-relaxed">
+                                                Unggah screenshot *Portofolio* Anda. AI kami akan mengekstrak aset Anda dengan sangat aman tanpa akses sekuritas.
+                                            </p>
+                                        </div>
+                                    </button>
+
+                                    {uploadError && (
+                                        <div className="p-3 bg-danger/10 text-danger border border-danger/20 rounded-lg text-xs mt-2">
+                                            {uploadError}
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="animate-in fade-in zoom-in-95 duration-300">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                            <CheckCircle2 size={16} className="text-primary" /> Data Terekstrak
+                                        </h4>
+                                        <button
+                                            onClick={() => setUploadedData(null)}
+                                            className="text-xs font-bold text-primary hover:text-primary-dark transition-colors"
+                                        >
+                                            Upload Ulang
+                                        </button>
+                                    </div>
+
+                                    <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1 mb-4">
+                                        {uploadedData.map((item, idx) => (
+                                            <div key={idx} className="p-3 rounded-lg border border-border bg-surface flex justify-between items-center text-xs">
+                                                <div>
+                                                    <span className="font-bold text-foreground text-sm block mb-0.5">{item.ticker || 'UNKNOWN'}</span>
+                                                    <span className="text-foreground-muted">{item.shares || 0} lot/unit</span>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="text-foreground-muted block mb-0.5">Avg: {item.averagePrice || 0}</span>
+                                                    <span className={`font-bold ${item.returnPercent && item.returnPercent > 0 ? 'text-primary' : item.returnPercent && item.returnPercent < 0 ? 'text-danger' : 'text-foreground'}`}>
+                                                        {item.returnPercent ? `${item.returnPercent > 0 ? '+' : ''}${item.returnPercent}%` : '-'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => {
+                                            setIsAddPortfolioModalOpen(false);
+                                            setUploadedData(null);
+                                            // Handle saving data logic here...
+                                        }}
+                                        className="w-full py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-colors"
+                                    >
+                                        Simpan Portofolio
+                                    </button>
                                 </div>
-                                <div>
-                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                        Privacy Mode (OCR / Manual)
-                                    </h4>
-                                    <p className="text-xs text-foreground-muted mt-1 leading-relaxed">
-                                        Unggah screenshot *Portofolio* Anda atau ketik manual. Data 100% aman tersimpan tanpa akses ke akun sekuritas Anda.
-                                    </p>
-                                </div>
-                            </button>
+                            )}
                         </div>
                     </div>
                 </div>
