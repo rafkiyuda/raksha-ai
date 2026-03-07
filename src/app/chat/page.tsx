@@ -30,13 +30,15 @@ export default function ChatPage() {
         scrollToBottom();
     }, [messages, isLoading]);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!input.trim() || isLoading) return;
+    const handleSubmit = async (e?: React.FormEvent, overrideInput?: string) => {
+        if (e) e.preventDefault();
 
-        const userMessage: Message = { id: Date.now().toString(), role: "user", content: input };
+        const messageText = overrideInput || input;
+        if (!messageText.trim() || isLoading) return;
+
+        const userMessage: Message = { id: Date.now().toString(), role: "user", content: messageText };
         setMessages((prev) => [...prev, userMessage]);
-        setInput("");
+        if (!overrideInput) setInput("");
         setIsLoading(true);
 
         try {
@@ -66,6 +68,22 @@ export default function ChatPage() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        // Handle deep link query from other pages (e.g. Truth Score)
+        const checkQuery = async () => {
+            if (typeof window !== "undefined") {
+                const params = new URLSearchParams(window.location.search);
+                const q = params.get("q");
+                if (q && messages.length === 1) { // Only run if it's the first interaction
+                    // Clean up URL without refreshing the page
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    await handleSubmit(undefined, q);
+                }
+            }
+        };
+        checkQuery();
+    }, []); // Run once on mount
 
     return (
         <div className="flex flex-col h-[calc(100dvh-5rem)] bg-background">

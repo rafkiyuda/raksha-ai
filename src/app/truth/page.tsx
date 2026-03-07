@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText, Search, ShieldAlert, AlertOctagon, CheckCircle2, ShieldQuestion } from "lucide-react";
+import Link from "next/link";
+import { ChevronDown, ChevronRight, TrendingUp, TrendingDown, ArrowDownUp, FileText, Search, ShieldAlert, AlertOctagon, CheckCircle2, ShieldQuestion, MessageSquarePlus } from "lucide-react";
 
 type ScanResult = {
     riskLevel: "Low" | "Moderate" | "High";
@@ -9,8 +10,45 @@ type ScanResult = {
     analysis: string;
 };
 
+const DUMMY_STOCKS = [
+    {
+        ticker: "BBCA",
+        name: "Bank Central Asia",
+        score: 92,
+        grade: "A",
+        netProfit: "Rp 48.2T",
+        cashFlow: "Rp 45.8T",
+        alignment: 95,
+        status: "No anomalies detected in financial statements",
+        riskLevel: "safe"
+    },
+    {
+        ticker: "TLKM",
+        name: "Telkom Indonesia",
+        score: 85,
+        grade: "A",
+        netProfit: "Rp 24.5T",
+        cashFlow: "Rp 22.1T",
+        alignment: 90,
+        status: "Consistent revenue, minor debt fluctuations",
+        riskLevel: "safe"
+    },
+    {
+        ticker: "GOTO",
+        name: "GoTo Gojek Tokopedia",
+        score: 42,
+        grade: "C",
+        netProfit: "-Rp 12.4T",
+        cashFlow: "Rp 1.2T",
+        alignment: 45,
+        status: "Negative profit margins, rapid cash burn",
+        riskLevel: "warning"
+    }
+];
+
 export default function TruthScorePage() {
     const [activeTab, setActiveTab] = useState<"analysis" | "scanner">("analysis");
+    const [expandedCard, setExpandedCard] = useState<string>("BBCA");
 
     // --- SCANNER STATE ---
     const [inputType, setInputType] = useState<"text" | "link">("text");
@@ -53,6 +91,14 @@ export default function TruthScorePage() {
         }
     };
 
+    const toggleCard = (ticker: string) => {
+        if (expandedCard === ticker) {
+            setExpandedCard("");
+        } else {
+            setExpandedCard(ticker);
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-screen bg-background pb-24">
             {/* Dynamic Header */}
@@ -83,7 +129,7 @@ export default function TruthScorePage() {
             {activeTab === "analysis" && (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <div className="flex flex-col items-center justify-center pt-4">
-                        {/* Circular Progress (Mock SVG for the "61 Avg Score" look) */}
+                        {/* Circular Progress */}
                         <div className="relative mt-2 mb-6 flex items-center justify-center">
                             <svg className="w-40 h-40 transform -rotate-90">
                                 {/* Background Track */}
@@ -126,99 +172,86 @@ export default function TruthScorePage() {
                             </button>
                         </div>
 
-                        {/* Detailed Item (Open State) - BBCA */}
-                        <div className="bg-surface rounded-2xl border border-primary/30 p-4 shadow-sm relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                        {DUMMY_STOCKS.map((stock) => {
+                            const isOpen = expandedCard === stock.ticker;
+                            const isWarning = stock.riskLevel === "warning";
+                            const strokeOffset = 132 - (132 * (stock.score / 100));
 
-                            <div className="flex justify-between items-center mb-5 relative z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="relative w-12 h-12 flex items-center justify-center">
-                                        <svg className="w-full h-full transform -rotate-90 absolute">
-                                            <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                            <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.92)} />
-                                        </svg>
-                                        <span className="text-sm font-bold text-primary">92</span>
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <h4 className="font-bold text-base text-foreground">BBCA</h4>
-                                            <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
+                            return (
+                                <div
+                                    key={stock.ticker}
+                                    className={`bg-surface rounded-2xl border ${isWarning ? 'border-warning/20' : (isOpen ? 'border-primary/30' : 'border-border/50')} p-4 shadow-sm relative overflow-hidden transition-all duration-300 ${!isOpen && 'cursor-pointer hover:bg-surface-hover'}`}
+                                    onClick={() => !isOpen && toggleCard(stock.ticker)}
+                                >
+                                    {/* Subtle glow effect when open */}
+                                    {isOpen && !isWarning && <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>}
+                                    {isOpen && isWarning && <div className="absolute top-0 right-0 w-32 h-32 bg-warning/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>}
+
+                                    {/* Card Header (Always Visible) */}
+                                    <div className={`flex justify-between items-center relative z-10 ${isOpen ? 'mb-5' : ''}`}>
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative w-12 h-12 flex items-center justify-center">
+                                                <svg className="w-full h-full transform -rotate-90 absolute">
+                                                    <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
+                                                    <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className={isWarning ? 'text-warning' : 'text-primary'} strokeDasharray="132" strokeDashoffset={strokeOffset} />
+                                                </svg>
+                                                <span className={`text-sm font-bold ${isWarning ? 'text-warning' : 'text-primary'}`}>{stock.score}</span>
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-0.5">
+                                                    <h4 className="font-bold text-base text-foreground">{stock.ticker}</h4>
+                                                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">{stock.grade}</span>
+                                                </div>
+                                                <p className="text-xs text-foreground-muted">{stock.name}</p>
+                                            </div>
                                         </div>
-                                        <p className="text-xs text-foreground-muted">Bank Central Asia</p>
+                                        {isOpen ? (
+                                            <ChevronDown size={18} className="text-foreground-muted cursor-pointer" onClick={(e) => { e.stopPropagation(); toggleCard(stock.ticker); }} />
+                                        ) : (
+                                            <ChevronRight size={18} className="text-foreground-muted" />
+                                        )}
                                     </div>
-                                </div>
-                                <ChevronDown size={18} className="text-foreground-muted cursor-pointer" />
-                            </div>
 
-                            <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
-                                <div className="bg-background rounded-xl p-3 border border-border/50">
-                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingUp size={10} /> Net Profit</span>
-                                    <p className="text-sm font-bold text-foreground">Rp 48.2T</p>
-                                </div>
-                                <div className="bg-background rounded-xl p-3 border border-border/50">
-                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingDown size={10} /> Cash Flow</span>
-                                    <p className="text-sm font-bold text-foreground">Rp 45.8T</p>
-                                </div>
-                            </div>
+                                    {/* Expanded Content */}
+                                    {isOpen && (
+                                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="grid grid-cols-2 gap-3 mb-5 relative z-10">
+                                                <div className="bg-background rounded-xl p-3 border border-border/50">
+                                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingUp size={10} /> Net Profit</span>
+                                                    <p className="text-sm font-bold text-foreground">{stock.netProfit}</p>
+                                                </div>
+                                                <div className="bg-background rounded-xl p-3 border border-border/50">
+                                                    <span className="flex items-center gap-1 text-[10px] text-foreground-muted mb-1"><TrendingDown size={10} /> Cash Flow</span>
+                                                    <p className="text-sm font-bold text-foreground">{stock.cashFlow}</p>
+                                                </div>
+                                            </div>
 
-                            <div className="mb-4 relative z-10">
-                                <div className="flex justify-between text-[10px] mb-2">
-                                    <span className="text-foreground-muted font-medium">Profit-Cash Alignment</span>
-                                    <span className="font-bold text-primary">95%</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-surface-active rounded-full overflow-hidden">
-                                    <div className="h-full bg-primary rounded-full w-[95%]"></div>
-                                </div>
-                            </div>
+                                            <div className="mb-4 relative z-10">
+                                                <div className="flex justify-between text-[10px] mb-2">
+                                                    <span className="text-foreground-muted font-medium">Profit-Cash Alignment</span>
+                                                    <span className={`font-bold ${isWarning ? 'text-warning' : 'text-primary'}`}>{stock.alignment}%</span>
+                                                </div>
+                                                <div className="h-1.5 w-full bg-surface-active rounded-full overflow-hidden">
+                                                    <div className={`h-full rounded-full ${isWarning ? 'bg-warning' : 'bg-primary'}`} style={{ width: `${stock.alignment}%` }}></div>
+                                                </div>
+                                            </div>
 
-                            <div className="bg-[#0c182a] border border-[#1e3a8a]/30 p-3 rounded-lg flex items-center gap-2 relative z-10">
-                                <FileText size={14} className="text-blue-400" />
-                                <p className="text-xs font-medium text-blue-400">No anomalies detected in financial statements</p>
-                            </div>
-                        </div>
+                                            <div className={`border p-3 rounded-lg flex items-center gap-2 relative z-10 mb-4 ${isWarning ? 'bg-[#2a1818] border-[#8a1e1e]/30' : 'bg-[#0c182a] border-[#1e3a8a]/30'}`}>
+                                                {isWarning ? <AlertOctagon size={14} className="text-red-400 shrink-0" /> : <FileText size={14} className="text-blue-400 shrink-0" />}
+                                                <p className={`text-xs font-medium ${isWarning ? 'text-red-400' : 'text-blue-400'}`}>{stock.status}</p>
+                                            </div>
 
-                        {/* Closed Item - TLKM */}
-                        <div className="bg-surface rounded-2xl border border-border/50 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="relative w-12 h-12 flex items-center justify-center">
-                                    <svg className="w-full h-full transform -rotate-90 absolute">
-                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-primary" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.85)} />
-                                    </svg>
-                                    <span className="text-sm font-bold text-primary">85</span>
+                                            <Link
+                                                href={`/chat?q=${encodeURIComponent(`Tolong analisa detail secara fundamental dan laporan cash flow untuk emiten saham ${stock.ticker} (${stock.name}). Mengapa Truth Score-nya ${stock.score}/100?`)}`}
+                                                className="w-full flex items-center justify-center gap-2 bg-surface-active hover:bg-border text-foreground py-3 rounded-xl text-xs font-bold transition-colors"
+                                            >
+                                                <MessageSquarePlus size={16} /> Tanya AI Detailnya
+                                            </Link>
+                                        </div>
+                                    )}
                                 </div>
-                                <div>
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                        <h4 className="font-bold text-base text-foreground">TLKM</h4>
-                                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">A</span>
-                                    </div>
-                                    <p className="text-xs text-foreground-muted">Telkom Indonesia</p>
-                                </div>
-                            </div>
-                            <ChevronRight size={18} className="text-foreground-muted" />
-                        </div>
-
-                        {/* Closed Item - GOTO (Warning) */}
-                        <div className="bg-surface rounded-2xl border border-warning/20 p-4 shadow-sm flex justify-between items-center cursor-pointer hover:bg-surface-hover transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="relative w-12 h-12 flex items-center justify-center">
-                                    <svg className="w-full h-full transform -rotate-90 absolute">
-                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-surface-active" />
-                                        <circle cx="24" cy="24" r="21" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-warning" strokeDasharray="132" strokeDashoffset={132 - (132 * 0.42)} />
-                                    </svg>
-                                    <span className="text-sm font-bold text-warning">42</span>
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-2 mb-0.5">
-                                        <h4 className="font-bold text-base text-foreground">GOTO</h4>
-                                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface-active text-foreground rounded flex items-center justify-center w-5 h-5">C</span>
-                                    </div>
-                                    <p className="text-xs text-foreground-muted">GoTo Gojek Tokopedia</p>
-                                </div>
-                            </div>
-                            <ChevronRight size={18} className="text-foreground-muted" />
-                        </div>
-
+                            );
+                        })}
                     </div>
                 </div>
             )}
@@ -292,8 +325,8 @@ export default function TruthScorePage() {
                             <h2 className="font-bold text-foreground mb-4">Analysis Result</h2>
 
                             <div className={`p-5 rounded-2xl border flex flex-col gap-4 relative overflow-hidden ${result.riskLevel === "High" ? "bg-danger/5 border-danger/30" :
-                                    result.riskLevel === "Moderate" ? "bg-warning/5 border-warning/30" :
-                                        "bg-primary/5 border-primary/30"
+                                result.riskLevel === "Moderate" ? "bg-warning/5 border-warning/30" :
+                                    "bg-primary/5 border-primary/30"
                                 }`}>
 
                                 <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-50 ${result.riskLevel === "High" ? "bg-danger/20" : result.riskLevel === "Moderate" ? "bg-warning/20" : "bg-primary/20"
