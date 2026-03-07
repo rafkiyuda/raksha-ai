@@ -242,7 +242,7 @@ export default function TruthScorePage() {
                                             </div>
 
                                             <Link
-                                                href={`/chat?q=${encodeURIComponent(`Tolong analisa detail secara fundamental dan laporan cash flow untuk emiten saham ${stock.ticker} (${stock.name}). Mengapa Truth Score-nya ${stock.score}/100?`)}`}
+                                                href={`/chat?context=stock&ticker=${stock.ticker}&name=${encodeURIComponent(stock.name)}&score=${stock.score}`}
                                                 className="w-full flex items-center justify-center gap-2 bg-surface-active hover:bg-border text-foreground py-3 rounded-xl text-xs font-bold transition-colors"
                                             >
                                                 <MessageSquarePlus size={16} /> Tanya AI Detailnya
