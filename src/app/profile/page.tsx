@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon } from "lucide-react";
+import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon, Eye, TrendingUp, Shield } from "lucide-react";
 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
@@ -83,6 +83,67 @@ export default function ProfilePage() {
             </header>
 
             <div className="p-5 flex flex-col gap-6">
+
+                {/* Total Portfolio Card */}
+                <section>
+                    <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm p-5 relative">
+                        <div className="flex justify-between items-start mb-2">
+                            <p className="text-sm font-semibold text-foreground-muted">Total Portfolio</p>
+                            <button className="text-foreground-muted hover:text-foreground transition-colors">
+                                <Eye size={18} />
+                            </button>
+                        </div>
+                        <h2 className="text-3xl font-bold text-foreground mb-2">Rp 150,000,000</h2>
+                        <div className="flex items-center gap-1.5 text-primary text-sm font-bold mb-6">
+                            <TrendingUp size={16} />
+                            <span>+Rp 12,450,000 (9.1%) <span className="text-xs font-normal text-foreground-muted ml-1">All Time</span></span>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="bg-surface-active rounded-xl p-3 text-center border border-border/50">
+                                <p className="text-xs text-foreground-muted mb-1">Stocks</p>
+                                <p className="text-lg font-bold text-foreground">5</p>
+                            </div>
+                            <div className="bg-surface-active rounded-xl p-3 text-center border border-border/50">
+                                <p className="text-xs text-foreground-muted mb-1">Alerts</p>
+                                <p className="text-lg font-bold text-danger">3</p>
+                            </div>
+                            <div className="bg-surface-active rounded-xl p-3 text-center border border-border/50">
+                                <p className="text-xs text-foreground-muted mb-1">Protected</p>
+                                <p className="text-lg font-bold text-primary">82%</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ShieldFi Protection Summary */}
+                <section>
+                    <div className="bg-surface rounded-2xl border border-primary/20 overflow-hidden shadow-sm p-5">
+                        <div className="flex items-center gap-2 mb-5">
+                            <Shield size={20} className="text-primary" />
+                            <h3 className="text-sm font-bold text-primary">ShieldFi Protection Summary</h3>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                            <div>
+                                <p className="text-xs text-foreground-muted mb-1">Trades Blocked</p>
+                                <p className="text-xl font-bold text-foreground">7</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-foreground-muted mb-1">FOMO Warnings</p>
+                                <p className="text-xl font-bold text-foreground">12</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-foreground-muted mb-1">Est. Loss Prevented</p>
+                                <p className="text-xl font-bold text-primary">Rp 28.5M</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-foreground-muted mb-1">Crisis Rebalances</p>
+                                <p className="text-xl font-bold text-foreground">2</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Core Settings / Features */}
                 <section>
