@@ -186,7 +186,7 @@ export default function TruthScorePage() {
                                 />
                             </svg>
                             <div className="absolute flex flex-col items-center justify-center">
-                                <span className="text-4xl font-bold text-foreground tracking-tight">61</span>
+                                <span className="text-4xl font-bold text-foreground tracking-tight">73</span>
                                 <span className="text-[10px] text-foreground-muted font-semibold mt-1">Avg Score</span>
                             </div>
                         </div>

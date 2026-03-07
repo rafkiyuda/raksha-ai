@@ -45,13 +45,13 @@ export default function Home() {
           </div>
           <p className="text-sm text-primary-light mb-1 relative z-10">Total Portfolio Value</p>
           <div className="flex items-end gap-3 mb-5 relative z-10">
-            <h2 className="text-3xl font-bold tracking-tight">Rp 24,500,000</h2>
+            <h2 className="text-3xl font-bold tracking-tight">Rp 150.000.000</h2>
           </div>
 
           <div className="flex gap-4 relative z-10">
             <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/20">
               <p className="text-xs text-primary-light mb-1">Truth Score Avg</p>
-              <p className="text-lg font-bold">86/100</p>
+              <p className="text-lg font-bold">73/100</p>
             </div>
             <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/20">
               <p className="text-xs text-primary-light mb-1">Risk Level</p>
