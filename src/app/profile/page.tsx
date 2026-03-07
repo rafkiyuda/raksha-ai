@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon, Eye, TrendingUp } from "lucide-react";
+import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon, Eye, EyeOff, TrendingUp } from "lucide-react";
 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
@@ -15,6 +15,7 @@ export default function ProfilePage() {
     // Feature States
     const [riskProfile, setRiskProfile] = useState("Moderate");
     const [smartNotification, setSmartNotification] = useState("Hanya Aset Berisiko Tinggi");
+    const [isBalanceVisible, setIsBalanceVisible] = useState(true);
 
     // Theme
     const { theme, setTheme } = useTheme();
@@ -93,16 +94,24 @@ export default function ProfilePage() {
                         <div className="flex justify-between items-start mb-6 relative z-10">
                             <div>
                                 <p className="text-xs font-bold text-foreground-muted uppercase tracking-wider mb-1">Total Portfolio</p>
-                                <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">Rp 150,000,000</h2>
+                                <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                                    {isBalanceVisible ? "Rp 150,000,000" : "Rp •••••••••••"}
+                                </h2>
                             </div>
-                            <button className="text-foreground-muted hover:text-primary transition-colors bg-surface border border-border p-2 rounded-full shadow-sm">
-                                <Eye size={18} />
+                            <button
+                                onClick={() => setIsBalanceVisible(!isBalanceVisible)}
+                                className="text-foreground-muted hover:text-primary transition-colors bg-surface border border-border p-2 rounded-full shadow-sm"
+                            >
+                                {isBalanceVisible ? <Eye size={18} /> : <EyeOff size={18} />}
                             </button>
                         </div>
 
                         <div className="flex items-center gap-1.5 text-primary text-sm font-bold mb-8 relative z-10 bg-primary/10 w-max px-3 py-1.5 rounded-lg border border-primary/20">
                             <TrendingUp size={16} />
-                            <span>+Rp 12,450,000 (9.1%) <span className="text-xs font-normal text-primary/70 ml-1">All Time</span></span>
+                            <span>
+                                {isBalanceVisible ? "+Rp 12,450,000 (9.1%)" : "+Rp ••••••••• (•.•%)"}
+                                <span className="text-xs font-normal text-primary/70 ml-1">All Time</span>
+                            </span>
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 relative z-10">
