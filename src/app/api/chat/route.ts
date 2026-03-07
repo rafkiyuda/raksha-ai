@@ -13,15 +13,26 @@ export async function POST(req: Request) {
             systemInstruction: "Kamu adalah RAKSHA AI, co-pilot edukasi finansial untuk investor ritel Gen Z dan Milenial di Indonesia. Tujuanmu adalah meningkatkan literasi finansial, menjelaskan risiko (seperti Truth Score, Notasi Khusus BEI), dan memberikan wawasan yang objektif. Jawab dengan bahasa Indonesia yang santai, mudah dimengerti, namun tegas soal manajemen risiko. JANGAN berikan rekomendasi beli/jual langsung. Jika user membahas saham berisiko tinggi (arus kas negatif, notasi khusus), peringatkan mereka dan sarankan diversifikasi. Jika ditanya soal saham gorengan (pump and dump) atau finfluencer yang hype, ingatkan untuk selalu cross-check data fundamental."
         });
 
-        // Ensure history only contains valid user/model alternation and starts with user
-        let filteredMessages = messages.slice(0, -1).filter((m: any) => m.id !== "1"); // Exclude our hardcoded greeting
+        // Gemini API is extremely strict about history format:
+        // 1. Must start with 'user'
+        // 2. Must strictly alternate 'user' -> 'model' -> 'user' etc.
+        let rawHistory = messages.slice(0, -1);
 
-        const history = filteredMessages.map((m: any) => ({
-            role: m.role === "user" ? "user" : "model",
-            parts: [{ text: m.content }]
-        }));
+        let validHistory: any[] = [];
+        let expectedRole = "user";
 
-        const chat = model.startChat({ history });
+        for (const msg of rawHistory) {
+            const mappedRole = msg.role === "user" ? "user" : "model";
+            if (mappedRole === expectedRole) {
+                validHistory.push({
+                    role: mappedRole,
+                    parts: [{ text: msg.content }]
+                });
+                expectedRole = expectedRole === "user" ? "model" : "user";
+            }
+        }
+
+        const chat = model.startChat({ history: validHistory });
 
         const latestMessage = messages[messages.length - 1].content;
         const result = await chat.sendMessage(latestMessage);

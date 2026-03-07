@@ -94,17 +94,20 @@ export default function ChatPage() {
             });
 
             const data = await response.json();
-            if (data.error) throw new Error(data.error);
+            if (!response.ok || data.error) {
+                console.error("Server API returned an error:", data);
+                throw new Error(data.details || data.error || "Unknown server error");
+            }
 
             setMessages((prev) => [
                 ...prev,
                 { id: (Date.now() + 1).toString(), role: "assistant", content: data.content }
             ]);
-        } catch (error) {
-            console.error("Chat error:", error);
+        } catch (error: any) {
+            console.error("Chat fetch try-catch error:", error);
             setMessages((prev) => [
                 ...prev,
-                { id: (Date.now() + 1).toString(), role: "assistant", content: "Maaf, sistem AI sedang sibuk. Coba lagi sebentar." }
+                { id: (Date.now() + 1).toString(), role: "assistant", content: `Maaf, sistem AI sedang sibuk. Coba lagi sebentar. Detail: ${error.message}` }
             ]);
         } finally {
             setIsLoading(false);
