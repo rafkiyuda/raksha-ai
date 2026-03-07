@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet, Lock, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, TrendingUp, TrendingDown, BellRing, ChevronRight, Wallet, Lock, CheckCircle2, MessageSquarePlus } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -110,7 +110,7 @@ export default function Home() {
               <p className="text-xs text-foreground-muted mb-3 leading-relaxed">
                 Social sentiment anomaly detected. Truth Score indicates mismatch with projected earnings.
               </p>
-              <Link href="/chat?topic=GOTO" className="inline-block px-3 py-1.5 bg-background border border-border text-foreground text-xs font-semibold rounded-lg hover:bg-surface-hover transition-colors">
+              <Link href="/chat?context=stock&ticker=GOTO&name=GoTo%20Gojek%20Tokopedia&score=42" className="inline-block px-3 py-1.5 bg-background border border-border text-foreground text-xs font-semibold rounded-lg hover:bg-surface-hover transition-colors">
                 Ask Co-Pilot
               </Link>
             </div>
@@ -235,10 +235,17 @@ function WatchlistCard({
 
       {/* Accordion Content */}
       {isOpen && (
-        <div className="px-4 py-3 bg-surface-hover border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
-          <p className="text-xs text-foreground leading-relaxed pr-2">
+        <div className="px-4 py-4 bg-surface-hover border-t border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
+          <p className="text-xs text-foreground leading-relaxed mb-4">
             <strong className="text-foreground font-semibold">AI Insight:</strong> {insight}
           </p>
+          <Link
+            href={`/chat?context=stock&ticker=${ticker}&name=${encodeURIComponent(name)}&score=${Math.max(0, 100 - riskLevel)}`}
+            className="w-full flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 py-2.5 rounded-xl text-xs font-bold transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MessageSquarePlus size={16} /> Tanya AI Detailnya
+          </Link>
         </div>
       )}
 
