@@ -12,6 +12,10 @@ export default function ProfilePage() {
     const [isBrokerageModalOpen, setIsBrokerageModalOpen] = useState(false);
     const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
 
+    // Feature States
+    const [riskProfile, setRiskProfile] = useState("Moderate");
+    const [smartNotification, setSmartNotification] = useState("Hanya Aset Berisiko Tinggi");
+
     // Theme
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -114,7 +118,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div className="text-left">
                                     <h4 className="font-bold text-sm text-foreground">Smart Notification</h4>
-                                    <p className="text-xs text-foreground-muted">Hanya notifikasi dari aset berisiko (GOTO, BUKA)</p>
+                                    <p className="text-xs text-foreground-muted">{smartNotification}</p>
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
@@ -159,7 +163,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div className="text-left">
                                     <h4 className="font-bold text-sm text-foreground">Risk Profile Settings</h4>
-                                    <p className="text-xs text-foreground-muted">Moderate - Balanced</p>
+                                    <p className="text-xs text-foreground-muted">{riskProfile} - Balanced</p>
                                 </div>
                             </div>
                             <ChevronRight size={18} className="text-foreground-muted" />
@@ -332,26 +336,49 @@ export default function ProfilePage() {
                             </button>
                         </div>
                         <div className="p-5 flex flex-col gap-3">
-                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none">
-                                <div>
-                                    <h4 className="font-bold text-sm text-foreground">Conservative</h4>
-                                    <p className="text-xs text-foreground-muted mt-0.5">Fokus pada pelestarian modal. (Reksadana/SBN)</p>
-                                </div>
-                            </button>
-                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none">
+                            <button
+                                onClick={() => setRiskProfile("Conservative")}
+                                className={`flex items-center justify-between p-4 rounded-xl border transition-colors text-left focus:ring-2 outline-none ${riskProfile === "Conservative" ? 'border-primary/30 bg-primary/5 ring-primary/50' : 'border-border bg-surface-active hover:bg-surface-hover ring-foreground/20'}`}
+                            >
                                 <div>
                                     <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                        Moderate <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>
+                                        Conservative
+                                        {riskProfile === "Conservative" && <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>}
+                                    </h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Fokus pada pelestarian modal. (Reksadana/SBN)</p>
+                                </div>
+                                {riskProfile === "Conservative" && <ShieldCheck size={18} className="text-primary" />}
+                            </button>
+
+                            <button
+                                onClick={() => setRiskProfile("Moderate")}
+                                className={`flex items-center justify-between p-4 rounded-xl border transition-colors text-left focus:ring-2 outline-none ${riskProfile === "Moderate" ? 'border-primary/30 bg-primary/5 ring-primary/50' : 'border-border bg-surface-active hover:bg-surface-hover ring-foreground/20'}`}
+                            >
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                        Moderate
+                                        {riskProfile === "Moderate" && <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>}
                                     </h4>
                                     <p className="text-xs text-foreground-muted mt-0.5">Kombinasi pertumbuhan dan stabilitas (Bluechip + ETF).</p>
                                 </div>
-                                <ShieldCheck size={18} className="text-primary" />
+                                {riskProfile === "Moderate" && <ShieldCheck size={18} className="text-primary" />}
                             </button>
-                            <button onClick={() => setIsRiskModalOpen(false)} className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-danger/50 outline-none">
+
+                            <button
+                                onClick={() => setRiskProfile("Aggressive")}
+                                className={`flex items-center justify-between p-4 rounded-xl border transition-colors text-left focus:ring-2 outline-none ${riskProfile === "Aggressive" ? 'border-danger/30 bg-danger/5 ring-danger/50' : 'border-border bg-surface-active hover:bg-surface-hover ring-danger/50'}`}
+                            >
                                 <div>
-                                    <h4 className="font-bold text-sm text-foreground text-danger">Aggressive</h4>
+                                    <h4 className={`font-bold text-sm flex items-center gap-2 ${riskProfile === "Aggressive" ? 'text-danger' : 'text-foreground'}`}>
+                                        Aggressive
+                                        {riskProfile === "Aggressive" && <span className="text-[9px] bg-danger text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>}
+                                    </h4>
                                     <p className="text-xs text-foreground-muted mt-0.5">Fokus imbal hasil tinggi, siap fluktuasi tajam (Saham Lapis 2/3).</p>
                                 </div>
+                                {riskProfile === "Aggressive" && <ShieldCheck size={18} className="text-danger" />}
+                            </button>
+                            <button onClick={() => setIsRiskModalOpen(false)} className="w-full mt-2 py-3 border border-border bg-surface-active hover:bg-surface-hover text-foreground-muted rounded-xl text-xs font-bold transition-colors">
+                                Tutup
                             </button>
                         </div>
                     </div>
@@ -416,23 +443,35 @@ export default function ProfilePage() {
                             </button>
                         </div>
                         <div className="p-5 flex flex-col gap-3">
-                            <button className="flex items-center justify-between p-4 rounded-xl border border-border bg-surface-active hover:bg-surface-hover transition-colors text-left focus:ring-2 ring-foreground/20 outline-none">
-                                <div>
-                                    <h4 className="font-bold text-sm text-foreground">Semua Notifikasi</h4>
-                                    <p className="text-xs text-foreground-muted mt-0.5">Dapatkan notifikasi harian untuk portofolio sehat & berisiko.</p>
-                                </div>
-                            </button>
-                            <button className="flex items-center justify-between p-4 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-left focus:ring-2 ring-primary/50 outline-none">
+                            <button
+                                onClick={() => setSmartNotification("Semua Notifikasi")}
+                                className={`flex items-center justify-between p-4 rounded-xl border transition-colors text-left focus:ring-2 outline-none ${smartNotification === "Semua Notifikasi" ? 'border-primary/30 bg-primary/5 ring-primary/50' : 'border-border bg-surface-active hover:bg-surface-hover ring-foreground/20'}`}
+                            >
                                 <div>
                                     <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
-                                        Hanya Aset Berisiko Tinggi <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>
+                                        Semua Notifikasi
+                                        {smartNotification === "Semua Notifikasi" && <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>}
+                                    </h4>
+                                    <p className="text-xs text-foreground-muted mt-0.5">Dapatkan notifikasi harian untuk portofolio sehat & berisiko.</p>
+                                </div>
+                                {smartNotification === "Semua Notifikasi" && <ShieldCheck size={18} className="text-primary" />}
+                            </button>
+
+                            <button
+                                onClick={() => setSmartNotification("Hanya Aset Berisiko Tinggi")}
+                                className={`flex items-center justify-between p-4 rounded-xl border transition-colors text-left focus:ring-2 outline-none ${smartNotification === "Hanya Aset Berisiko Tinggi" ? 'border-primary/30 bg-primary/5 ring-primary/50' : 'border-border bg-surface-active hover:bg-surface-hover ring-foreground/20'}`}
+                            >
+                                <div>
+                                    <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                                        Hanya Aset Berisiko Tinggi
+                                        {smartNotification === "Hanya Aset Berisiko Tinggi" && <span className="text-[9px] bg-primary text-white px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Aktif</span>}
                                     </h4>
                                     <p className="text-xs text-foreground-muted mt-0.5">Saring sinyal bising. Peringatkan saya jika GOTO / BUKA bermasalah.</p>
                                 </div>
-                                <ShieldCheck size={18} className="text-primary" />
+                                {smartNotification === "Hanya Aset Berisiko Tinggi" && <ShieldCheck size={18} className="text-primary" />}
                             </button>
-                            <button onClick={() => setIsNotificationModalOpen(false)} className="w-full mt-2 py-3 bg-primary text-white rounded-xl text-xs font-bold transition-colors">
-                                Simpan Pengaturan
+                            <button onClick={() => setIsNotificationModalOpen(false)} className="w-full mt-2 py-3 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-colors">
+                                Tutup
                             </button>
                         </div>
                     </div>
