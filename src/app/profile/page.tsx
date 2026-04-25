@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon, Eye, EyeOff, TrendingUp } from "lucide-react";
+import { User as UserIcon, Settings, ShieldCheck, Wallet, ChevronRight, LogOut, Ban, BellOff, Plus, FileText, Link as LinkIcon, X, Loader2, UploadCloud, CheckCircle2, Moon, Eye, EyeOff, TrendingUp, Trophy, Medal, Target, Zap, Key, Lock, Bell, HelpCircle, Info, CreditCard } from "lucide-react";
 
 export default function ProfilePage() {
     const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
@@ -11,6 +11,13 @@ export default function ProfilePage() {
     const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [isBrokerageModalOpen, setIsBrokerageModalOpen] = useState(false);
     const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
+    
+    // New Feature States Modals
+    const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+    const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+    const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+    const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
     // Feature States
     const [riskProfile, setRiskProfile] = useState("Moderate");
@@ -130,6 +137,40 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </section>
+                
+                {/* Achievement Badges */}
+                <section>
+                    <div className="flex items-center justify-between mb-3 px-1">
+                        <h3 className="text-sm font-bold text-foreground-muted uppercase tracking-wider">Achievements</h3>
+                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">4 / 12 Unlocked</span>
+                    </div>
+                    <div className="flex gap-4 overflow-x-auto hide-scrollbar -mx-5 px-5 py-2">
+                        <div className="flex flex-col items-center gap-2 group shrink-0">
+                            <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 shadow-sm transition-transform group-hover:scale-110">
+                                <Trophy size={32} />
+                            </div>
+                            <span className="text-[10px] font-bold text-foreground">Early Bird</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 group shrink-0">
+                            <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 shadow-sm transition-transform group-hover:scale-110">
+                                <ShieldCheck size={32} />
+                            </div>
+                            <span className="text-[10px] font-bold text-foreground">Truth Seeker</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 group shrink-0">
+                            <div className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 shadow-sm transition-transform group-hover:scale-110">
+                                <Zap size={32} />
+                            </div>
+                            <span className="text-[10px] font-bold text-foreground">Fast Learner</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2 group shrink-0 opacity-40 grayscale">
+                            <div className="w-16 h-16 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 border border-slate-300 dark:border-slate-700 shadow-sm transition-transform group-hover:scale-110">
+                                <Target size={32} />
+                            </div>
+                            <span className="text-[10px] font-bold text-foreground">Master</span>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Core Settings / Features */}
                 <section>
@@ -238,6 +279,80 @@ export default function ProfilePage() {
                                 <span className="text-xs font-bold text-foreground-muted capitalize">{theme === 'dark' ? 'Dark' : 'Light'}</span>
                                 <ChevronRight size={18} className="text-foreground-muted" />
                             </div>
+                        </button>
+                    </div>
+                </section>
+
+                {/* Account & Security Settings */}
+                <section>
+                    <h3 className="text-sm font-bold text-foreground-muted uppercase tracking-wider mb-3 px-1">Account & Security</h3>
+                    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden flex flex-col">
+                        <button onClick={() => setIsAccountModalOpen(true)} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-primary/5 text-primary">
+                                    <UserIcon size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Account Information</h4>
+                                    <p className="text-[10px] text-foreground-muted">Email, Phone, Personal Bio</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-foreground-muted" />
+                        </button>
+                        <button onClick={() => setIsSecurityModalOpen(true)} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                    <Lock size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Security & Privacy</h4>
+                                    <p className="text-[10px] text-foreground-muted">2FA, Password, Data Privacy</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-foreground-muted" />
+                        </button>
+                        <button onClick={() => setIsNotificationSettingsOpen(true)} className="flex items-center justify-between p-4 hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600">
+                                    <Bell size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Notification Settings</h4>
+                                    <p className="text-[10px] text-foreground-muted">Push, Email, WhatsApp Alerts</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-foreground-muted" />
+                        </button>
+                    </div>
+                </section>
+
+                {/* Support & Others */}
+                <section>
+                    <h3 className="text-sm font-bold text-foreground-muted uppercase tracking-wider mb-3 px-1">Support</h3>
+                    <div className="bg-surface rounded-xl border border-border shadow-sm overflow-hidden flex flex-col">
+                        <button onClick={() => setIsHelpModalOpen(true)} className="flex items-center justify-between p-4 border-b border-border/50 hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-surface-active text-foreground">
+                                    <HelpCircle size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Help & Support</h4>
+                                    <p className="text-[10px] text-foreground-muted">FAQ, Contact Center</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-foreground-muted" />
+                        </button>
+                        <button onClick={() => setIsTermsModalOpen(true)} className="flex items-center justify-between p-4 hover:bg-surface-hover transition-colors">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 rounded-lg bg-surface-active text-foreground">
+                                    <Info size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <h4 className="font-bold text-sm text-foreground">Terms & Conditions</h4>
+                                    <p className="text-[10px] text-foreground-muted">Privacy Policy, Legal</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-foreground-muted" />
                         </button>
                     </div>
                 </section>
@@ -532,6 +647,99 @@ export default function ProfilePage() {
                     </div>
                 )
             }
+
+            {/* Account Information Modal */}
+            {isAccountModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[450px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <h3 className="text-lg font-bold">Account Information</h3>
+                            <button onClick={() => setIsAccountModalOpen(false)} className="p-2 bg-surface-active rounded-full"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 flex flex-col gap-5">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-foreground-muted uppercase">Full Name</label>
+                                <input type="text" defaultValue="Sherine" className="w-full bg-surface-active border border-border p-3 rounded-xl focus:ring-2 ring-primary outline-none" />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-foreground-muted uppercase">Email Address</label>
+                                <input type="email" defaultValue="sherine@raksha.ai" className="w-full bg-surface-active border border-border p-3 rounded-xl focus:ring-2 ring-primary outline-none" />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-foreground-muted uppercase">Phone Number</label>
+                                <input type="text" defaultValue="+62 812-3456-7890" className="w-full bg-surface-active border border-border p-3 rounded-xl focus:ring-2 ring-primary outline-none" />
+                            </div>
+                            <button className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg shadow-primary/20 mt-2">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Security Modal */}
+            {isSecurityModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[450px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <h3 className="text-lg font-bold">Security & Privacy</h3>
+                            <button onClick={() => setIsSecurityModalOpen(false)} className="p-2 bg-surface-active rounded-full"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 flex flex-col gap-4">
+                            <div className="p-4 rounded-2xl bg-surface-active border border-border flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-emerald-500/10 text-emerald-600"><ShieldCheck size={20} /></div>
+                                    <span className="font-bold text-sm">Two-Factor Auth</span>
+                                </div>
+                                <div className="w-10 h-5 bg-primary rounded-full relative"><div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div></div>
+                            </div>
+                            <button className="w-full text-left p-4 rounded-2xl bg-surface-active border border-border flex items-center justify-between font-bold text-sm">
+                                Change Password <ChevronRight size={18} />
+                            </button>
+                            <button className="w-full text-left p-4 rounded-2xl bg-surface-active border border-border flex items-center justify-between font-bold text-sm">
+                                Data Privacy Settings <ChevronRight size={18} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+             {/* Help Modal */}
+             {isHelpModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[450px] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <h3 className="text-lg font-bold">Help & Support</h3>
+                            <button onClick={() => setIsHelpModalOpen(false)} className="p-2 bg-surface-active rounded-full"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 flex flex-col gap-4 overflow-y-auto max-h-[60vh]">
+                            {['Bagaimana cara hubungkan sekuritas?', 'Apakah data saya aman?', 'Cara kerja AI Co-Pilot', 'Hubungi Customer Service'].map((q, i) => (
+                                <button key={i} className="w-full text-left p-4 rounded-2xl bg-surface-active border border-border flex items-center justify-between font-bold text-sm">
+                                    {q} <ChevronRight size={18} />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Terms Modal */}
+            {isTermsModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-surface w-full sm:w-[450px] h-[70vh] rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-300">
+                        <div className="p-5 border-b border-border/50 flex justify-between items-center">
+                            <h3 className="text-lg font-bold">Terms & Conditions</h3>
+                            <button onClick={() => setIsTermsModalOpen(false)} className="p-2 bg-surface-active rounded-full"><X size={20} /></button>
+                        </div>
+                        <div className="p-6 overflow-y-auto">
+                            <p className="text-sm text-foreground-muted leading-relaxed mb-4">
+                                1. RAKSHA AI menyediakan layanan analisis berbasis data untuk membantu investor.\n\n
+                                2. Segala keputusan investasi tetap berada di tangan pengguna.\n\n
+                                3. Kami menjaga privasi data Anda dengan standar enkripsi militer.\n\n
+                                4. Dengan menggunakan aplikasi ini, Anda setuju dengan syarat dan kebijakan privasi yang berlaku.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }

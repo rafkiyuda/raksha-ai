@@ -63,22 +63,22 @@ export default function Home() {
         </section>
 
         {/* Action Buttons */}
-        <section className="grid grid-cols-2 gap-3">
-          <Link href="/chat" className="bg-surface border border-border rounded-xl p-4 shadow-sm flex items-center justify-between hover:border-primary/50 transition-colors">
+        <section className="flex gap-3 overflow-x-auto hide-scrollbar -mx-5 px-5 py-2">
+          <Link href="/chat" className="flex-1 min-w-[160px] bg-white dark:bg-surface border border-border shadow-md rounded-3xl p-5 flex items-center justify-between hover:border-primary/50 transition-all group shrink-0">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary-light/50 text-primary-dark dark:bg-primary-light/20 dark:text-primary rounded-lg">
-                <ShieldAlert size={20} />
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-primary-light/10 text-emerald-600 dark:text-primary flex items-center justify-center shadow-inner">
+                <ShieldAlert size={22} />
               </div>
-              <span className="font-semibold text-sm">AI Co-Pilot</span>
+              <span className="font-bold text-sm text-foreground/80 group-hover:text-primary transition-colors leading-tight">AI Co-<br/>Pilot</span>
             </div>
             <ChevronRight size={16} className="text-foreground-muted" />
           </Link>
-          <Link href="/truth" className="bg-surface border border-border rounded-xl p-4 shadow-sm flex items-center justify-between hover:border-primary/50 transition-colors">
+          <Link href="/truth" className="flex-1 min-w-[160px] bg-white dark:bg-surface border border-border shadow-md rounded-3xl p-5 flex items-center justify-between hover:border-primary/50 transition-all group shrink-0">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning/20 text-warning-dark dark:text-warning rounded-lg">
-                <TrendingDown size={20} />
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-inner">
+                <TrendingDown size={22} />
               </div>
-              <span className="font-semibold text-sm">Truth Scanner</span>
+              <span className="font-bold text-sm text-foreground/80 group-hover:text-primary transition-colors leading-tight">Truth<br/>Scanner</span>
             </div>
             <ChevronRight size={16} className="text-foreground-muted" />
           </Link>
@@ -86,36 +86,88 @@ export default function Home() {
 
         {/* Risk Alerts */}
         <section>
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-base font-bold text-foreground">Active Alerts</h3>
-            <Link href="/truth" className="text-xs font-semibold text-primary hover:underline">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-foreground">Active Alerts</h3>
+            <Link href="/truth" className="text-xs font-bold text-primary hover:underline">
               See All
             </Link>
           </div>
 
-          <div className="bg-surface border border-border rounded-xl p-4 shadow-sm flex gap-3 items-start">
-            <div className="p-2 bg-danger/10 rounded-lg shrink-0 mt-0.5">
-              <ShieldAlert className="text-danger" size={18} />
+          <div className="bg-white dark:bg-surface border border-border rounded-3xl p-5 shadow-md flex gap-4 items-start relative overflow-hidden group">
+             <div className="absolute top-0 right-0 w-24 h-24 bg-danger/5 rounded-full blur-2xl -mr-12 -mt-12"></div>
+            <div className="p-3 bg-danger/10 rounded-2xl shrink-0">
+              <ShieldAlert className="text-danger" size={24} />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 relative z-10">
               <div className="flex justify-between items-start mb-1">
-                <h4 className="font-bold text-sm text-foreground">GOTO: High Volatility</h4>
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-danger/10 text-danger rounded-full">High</span>
+                <h4 className="font-bold text-base text-foreground">GOTO: High Volatility</h4>
+                <span className="text-[10px] font-black px-2.5 py-1 bg-danger/10 text-danger rounded-full border border-danger/10">HIGH</span>
               </div>
-              <p className="text-xs text-foreground-muted mb-3 leading-relaxed">
+              <p className="text-xs text-foreground-muted mb-4 leading-relaxed">
                 Social sentiment anomaly detected. Truth Score indicates mismatch with projected earnings.
               </p>
-              <Link href="/chat?context=stock&ticker=GOTO&name=GoTo%20Gojek%20Tokopedia&score=42" className="inline-block px-3 py-1.5 bg-background border border-border text-foreground text-xs font-semibold rounded-lg hover:bg-surface-hover transition-colors">
+              <Link href="/chat?context=stock&ticker=GOTO&name=GoTo%20Gojek%20Tokopedia&score=42" className="inline-flex px-4 py-2 bg-foreground text-background text-xs font-bold rounded-xl hover:opacity-90 transition-opacity shadow-sm">
                 Ask Co-Pilot
               </Link>
             </div>
           </div>
         </section>
 
+        {/* Investor Insights / News */}
+        <section>
+          <div className="flex justify-between items-center mb-5">
+            <h3 className="text-xl font-bold text-foreground tracking-tight">Investor Insights</h3>
+            <Link href="/journey" className="text-sm font-bold text-primary hover:underline transition-all">
+              See All
+            </Link>
+          </div>
+          
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar -mx-5 px-5 mb-2">
+            <Link href="/journey" className="min-w-[280px] h-[180px] relative rounded-[32px] overflow-hidden group shrink-0 shadow-lg block">
+              <img 
+                src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=60" 
+                alt="market" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-5 w-full">
+                <span className="inline-block px-3 py-1 bg-red-500 text-white text-[10px] font-black rounded-lg mb-3 shadow-lg">Security</span>
+                <h4 className="font-bold text-base text-white leading-snug line-clamp-2 drop-shadow-md">Waspada Penipuan Investasi Berkedok AI Co-Pilot Palsu</h4>
+              </div>
+            </Link>
+
+            <Link href="/journey" className="min-w-[280px] h-[180px] relative rounded-[32px] overflow-hidden group shrink-0 shadow-lg block">
+              <img 
+                src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&auto=format&fit=crop&q=60" 
+                alt="security" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-5 w-full">
+                <span className="inline-block px-3 py-1 bg-emerald-500 text-white text-[10px] font-black rounded-lg mb-3 shadow-lg">Regulation</span>
+                <h4 className="font-bold text-base text-white leading-snug line-clamp-2 drop-shadow-md">OJK Blokir 120 Platform Investasi Ilegal Pekan Ini</h4>
+              </div>
+            </Link>
+            
+            <Link href="/journey" className="min-w-[280px] h-[180px] relative rounded-[32px] overflow-hidden group shrink-0 shadow-lg block">
+              <img 
+                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&auto=format&fit=crop&q=80" 
+                alt="market" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 p-5 w-full">
+                <span className="inline-block px-3 py-1 bg-amber-500 text-white text-[10px] font-black rounded-lg mb-3 shadow-lg">Education</span>
+                <h4 className="font-bold text-base text-white leading-snug line-clamp-2 drop-shadow-md">Mengenal 'Wash Trading' yang Sedang Marak di Kripto</h4>
+              </div>
+            </Link>
+          </div>
+        </section>
+
         {/* Market Movers / Watchlist */}
         <section>
-          <h3 className="text-base font-bold text-foreground mb-3">Your Watchlist Insights</h3>
-          <div className="flex flex-col gap-3">
+          <h3 className="text-lg font-bold text-foreground mb-4">Your Watchlist Insights</h3>
+          <div className="flex flex-col gap-4">
 
             <WatchlistCard
               ticker="GOTO"
@@ -159,7 +211,18 @@ export default function Home() {
 
           </div>
         </section>
+
       </div>
+
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
@@ -182,6 +245,15 @@ function WatchlistCard({
   };
   const riskColor = colors[riskClass] || colors.primary;
   const riskBg = bgColors[riskClass] || bgColors.primary;
+  const logoMap: Record<string, string> = {
+    "GOTO": "/images/logos/goto.png",
+    "BUKA": "/images/logos/buka.png",
+    "BBCA": "/images/logos/bbca.png",
+    "TLKM": "/images/logos/tlkm.png",
+    "ASII": "/images/logos/asii.png",
+    "ARTO": "/images/logos/arto.png",
+    "BREN": "/images/logos/bren.png",
+  };
 
   return (
     <div className={`bg-surface rounded-xl border ${riskClass === 'danger' ? 'border-danger/30' : riskClass === 'warning' ? 'border-warning/30' : 'border-primary/30'} shadow-sm overflow-hidden transition-all`}>
@@ -191,8 +263,12 @@ function WatchlistCard({
       >
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-surface-active flex items-center justify-center font-bold text-xs text-foreground shrink-0">
-              {ticker}
+            <div className="w-10 h-10 rounded-full bg-white dark:bg-surface-active flex items-center justify-center border border-border shadow-sm overflow-hidden shrink-0">
+              {logoMap[ticker] ? (
+                <img src={logoMap[ticker]} alt={ticker} className="w-full h-full object-contain p-1.5" />
+              ) : (
+                <span className="font-bold text-xs text-foreground">{ticker}</span>
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2 mb-0.5">
