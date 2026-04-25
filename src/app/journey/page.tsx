@@ -23,6 +23,135 @@ interface Lesson {
     };
 }
 
+const ShortVideoCard = ({ short, isMuted, setIsMuted }: { short: any, isMuted: boolean, setIsMuted: (m: boolean) => void }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    videoRef.current?.play().catch(err => console.log("Autoplay blocked", err));
+                } else {
+                    videoRef.current?.pause();
+                }
+            },
+            { threshold: 0.6 } // Video plays when more than 60% is visible
+        );
+
+        if (videoRef.current) {
+            observer.observe(videoRef.current);
+        }
+
+        return () => {
+            if (videoRef.current) {
+                observer.unobserve(videoRef.current);
+            }
+        };
+    }, []);
+
+    return (
+        <div className="w-full h-full snap-start relative flex flex-col justify-end overflow-hidden group">
+            {/* Local Video Background */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none brightness-[0.7]">
+                <video 
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    src={short.videoUrl}
+                    loop
+                    muted={isMuted}
+                    playsInline
+                />
+            </div>
+            
+            {/* Overlay Shadow */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30 pointer-events-none" />
+            
+            {/* Top Controls */}
+            <div className="absolute top-4 left-0 right-0 px-6 flex justify-between items-center z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button 
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 active:scale-95 transition-all"
+                >
+                    {isMuted ? <VolumeX className="text-white" size={20} /> : <Volume2 className="text-white" size={20} />}
+                </button>
+                <button className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                    <MoreVertical className="text-white" size={20} />
+                </button>
+            </div>
+
+            {/* Bottom Info Content */}
+            <div className="relative z-20 mb-10 p-6 animate-in slide-in-from-bottom-8 duration-700">
+                <div className="flex flex-col gap-4">
+                    {/* User Info */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full border-2 border-primary overflow-hidden bg-white/10 backdrop-blur-lg flex items-center justify-center p-0.5 shadow-lg shadow-primary/20">
+                            <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center">
+                                <User className="text-white" size={24} />
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                                <span className="font-black text-white text-base drop-shadow-md">@{short.user}</span>
+                                <CheckCircle2 size={14} className="fill-blue-500 text-white" />
+                            </div>
+                            <span className="text-white/70 text-[10px]">Verified Financial Expert</span>
+                        </div>
+                        <button className="ml-2 bg-primary hover:bg-primary-dark transition-colors text-white px-4 py-1.5 rounded-full text-xs font-black shadow-lg shadow-primary/20">
+                            Follow
+                        </button>
+                    </div>
+                    
+                    {/* Description */}
+                    <p className="text-white text-sm leading-snug max-w-[85%] font-medium drop-shadow-md line-clamp-3">
+                        {short.desc}
+                    </p>
+                    
+                    {/* Music Container */}
+                    <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/10 w-fit px-3 py-1.5 rounded-full">
+                        <div className="w-4 h-4 bg-white/20 rounded-full flex items-center justify-center animate-[spin_5s_linear_infinite]">
+                            <Music size={10} className="text-white" />
+                        </div>
+                        <span className="text-white text-[10px] font-bold truncate max-w-[120px]">{short.music}</span>
+                    </div>
+                </div>
+            </div>
+            
+            {/* Right Sidebar Actions */}
+            <div className="absolute right-4 bottom-20 flex flex-col items-center gap-6 z-30">
+                <div className="flex flex-col items-center gap-1.5">
+                    <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-red-500/40 group/action">
+                        <Heart className="text-white group-hover/action:fill-red-500 group-hover/action:text-red-500" size={26} />
+                    </div>
+                    <span className="text-[11px] font-bold text-white drop-shadow-md">{short.likes}</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5">
+                    <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-blue-500/40 group/action">
+                        <MessageCircle className="text-white" size={26} />
+                    </div>
+                    <span className="text-[11px] font-bold text-white drop-shadow-md">{short.comments}</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5">
+                    <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-amber-500/40 group/action">
+                        <Bookmark className="text-white" size={26} />
+                    </div>
+                    <span className="text-[11px] font-bold text-white drop-shadow-md">Save</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5">
+                    <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-emerald-500/40 group/action">
+                        <Share2 className="text-white" size={26} />
+                    </div>
+                    <span className="text-[11px] font-bold text-white drop-shadow-md">Share</span>
+                </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-30">
+                <div className="h-full bg-primary animate-[progress_15s_linear_infinite]" style={{ width: '100%' }} />
+            </div>
+        </div>
+    );
+};
+
 export default function JourneyPage() {
     const [activeTab, setActiveTab] = useState<'learning' | 'news' | 'videos'>('learning');
     const [level, setLevel] = useState(3);
@@ -32,7 +161,7 @@ export default function JourneyPage() {
     const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
     const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
     const [completedIds, setCompletedIds] = useState<number[]>([1, 2]);
-    const [isMuted, setIsMuted] = useState(true);
+    const [isMuted, setIsMuted] = useState(false);
 
     const pointsToNextLevel = 2000;
     const progress = (points / pointsToNextLevel) * 100;
@@ -153,29 +282,29 @@ export default function JourneyPage() {
         {
             id: 1,
             user: "raksha_edu",
-            desc: "Apa itu Saham Blue Chip? 🤔 Belajar pelan-pelan yuk! #bluechip #investasi #pemula",
-            music: "Educational Beats - RAKSHA",
+            desc: "Gawat! IHSG & Rupiah Jeblok Berbarengan 📉 Apa yang Harus Kita Lakukan? #ihsg #rupiah #investasi #crisis",
+            music: "Crisis Alert - RAKSHA",
             likes: "12K",
             comments: "450",
-            videoId: "339-165fX_0"
+            videoUrl: "/videos/shorts/short-1.mp4"
         },
         {
             id: 2,
             user: "market_insider",
-            desc: "Rahasia Bandar Saham terungkap! Hati-hati dengan pola ini 🚩 #bandar #foreks #saham",
-            music: "Tension Market Mix",
+            desc: "Pov: Kamu Investor Ritel Pas Liat IHSG Kebakaran 🔥 Stay Slay atau Stay Pray? 😂 #ritel #meme #saham #ngakak",
+            music: "Funny Retail Mix",
             likes: "89K",
             comments: "2.1K",
-            videoId: "nI0N-I6kX_o"
+            videoUrl: "/videos/shorts/short-2.mp4"
         },
         {
             id: 3,
             user: "finance_freedom",
-            desc: "Cara atur keuangan biar nggak boncos tiap bulan 💸 #finance #budgeting #tips",
-            music: "Aesthetic Finance Music",
+            desc: "Top 5 Saham dengan Potensi Ledakan Harga di Minggu Ini! 🚀 Cek Watchlist Kamu Sekarang! #rekomendasi #saham #pilihan",
+            music: "Bull Run Beats",
             likes: "156K",
             comments: "4.2K",
-            videoId: "mX9jSjTjU_U"
+            videoUrl: "/videos/shorts/short-3.mp4"
         }
     ];
 
@@ -206,7 +335,7 @@ export default function JourneyPage() {
     };
 
     return (
-        <div className={`flex flex-col min-h-screen bg-background pb-24 ${activeTab === 'videos' ? 'overflow-hidden' : ''}`}>
+        <div className={`flex flex-col min-h-screen bg-background ${activeTab === 'videos' ? 'overflow-hidden pb-0' : 'pb-24'}`}>
             {/* Header Area */}
             <header className={`px-5 pt-10 pb-6 sticky top-0 z-40 transition-all duration-500 ${activeTab === 'videos' ? 'bg-zinc-950 border-white/10 text-white' : 'bg-surface border-b border-border/50 backdrop-blur-md'}`}>
                 <div className="flex items-center justify-between mb-4">
@@ -378,106 +507,9 @@ export default function JourneyPage() {
 
                 {/* ===================== TAB: VIDEOS (SHORTS STYLE) ===================== */}
                 {activeTab === 'videos' && (
-                    <div className="h-[calc(100vh-230px)] w-full overflow-y-scroll snap-y snap-mandatory bg-black hide-scrollbar relative">
+                    <div className="h-[calc(100vh-170px)] w-full overflow-y-scroll snap-y snap-mandatory bg-black hide-scrollbar relative">
                         {shortsData.map((short) => (
-                            <div key={short.id} className="w-full h-full snap-start relative flex flex-col justify-end overflow-hidden group">
-                                {/* YouTube Iframe Background */}
-                                <div className="absolute inset-0 w-full h-full pointer-events-none brightness-[0.7]">
-                                    <iframe 
-                                        className="w-full h-full scale-[1.5]"
-                                        src={`https://www.youtube.com/embed/${short.videoId}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${short.videoId}&modestbranding=1&rel=0`}
-                                        title={short.user}
-                                        allow="autoplay; encrypted-media; picture-in-picture"
-                                        frameBorder="0"
-                                    />
-                                </div>
-                                
-                                {/* Overlay Shadow */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30 pointer-events-none" />
-                                
-                                {/* Top Controls */}
-                                <div className="absolute top-4 left-0 right-0 px-6 flex justify-between items-center z-30 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button 
-                                        onClick={() => setIsMuted(!isMuted)}
-                                        className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
-                                    >
-                                        {isMuted ? <VolumeX className="text-white" size={20} /> : <Volume2 className="text-white" size={20} />}
-                                    </button>
-                                    <button className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                                        <MoreVertical className="text-white" size={20} />
-                                    </button>
-                                </div>
-
-                                {/* Bottom Info Content */}
-                                <div className="relative z-20 mb-28 p-6 animate-in slide-in-from-bottom-8 duration-700">
-                                    <div className="flex flex-col gap-4">
-                                        {/* User Info */}
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-full border-2 border-primary overflow-hidden bg-white/10 backdrop-blur-lg flex items-center justify-center p-0.5 shadow-lg shadow-primary/20">
-                                                <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center">
-                                                    <User className="text-white" size={24} />
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-black text-white text-base drop-shadow-md">@{short.user}</span>
-                                                    <CheckCircle2 size={14} className="fill-blue-500 text-white" />
-                                                </div>
-                                                <span className="text-white/70 text-[10px]">Verified Financial Expert</span>
-                                            </div>
-                                            <button className="ml-2 bg-primary hover:bg-primary-dark transition-colors text-white px-4 py-1.5 rounded-full text-xs font-black shadow-lg shadow-primary/20">
-                                                Follow
-                                            </button>
-                                        </div>
-                                        
-                                        {/* Description */}
-                                        <p className="text-white text-sm leading-snug max-w-[85%] font-medium drop-shadow-md line-clamp-3">
-                                            {short.desc}
-                                        </p>
-                                        
-                                        {/* Music Container */}
-                                        <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/10 w-fit px-3 py-1.5 rounded-full">
-                                            <div className="w-4 h-4 bg-white/20 rounded-full flex items-center justify-center animate-[spin_5s_linear_infinite]">
-                                                <Music size={10} className="text-white" />
-                                            </div>
-                                            <span className="text-white text-[10px] font-bold truncate max-w-[120px]">{short.music}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Right Sidebar Actions */}
-                                <div className="absolute right-4 bottom-36 flex flex-col items-center gap-6 z-30">
-                                    <div className="flex flex-col items-center gap-1.5">
-                                        <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-red-500/40 group/action">
-                                            <Heart className="text-white group-hover/action:fill-red-500 group-hover/action:text-red-500" size={26} />
-                                        </div>
-                                        <span className="text-[11px] font-bold text-white drop-shadow-md">{short.likes}</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-1.5">
-                                        <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-blue-500/40 group/action">
-                                            <MessageCircle className="text-white" size={26} />
-                                        </div>
-                                        <span className="text-[11px] font-bold text-white drop-shadow-md">{short.comments}</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-1.5">
-                                        <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-amber-500/40 group/action">
-                                            <Bookmark className="text-white" size={26} />
-                                        </div>
-                                        <span className="text-[11px] font-bold text-white drop-shadow-md">Save</span>
-                                    </div>
-                                    <div className="flex flex-col items-center gap-1.5">
-                                        <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 shadow-xl active:scale-90 transition-all cursor-pointer hover:bg-emerald-500/40 group/action">
-                                            <Share2 className="text-white" size={26} />
-                                        </div>
-                                        <span className="text-[11px] font-bold text-white drop-shadow-md">Share</span>
-                                    </div>
-                                </div>
-
-                                {/* Progress Bar */}
-                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-30">
-                                    <div className="h-full bg-primary animate-[progress_15s_linear_infinite]" style={{ width: '100%' }} />
-                                </div>
-                            </div>
+                            <ShortVideoCard key={short.id} short={short} isMuted={isMuted} setIsMuted={setIsMuted} />
                         ))}
                         
                         {/* Overlay Scroll Indicator */}

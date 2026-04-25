@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import FloatingChatButton from "@/components/FloatingChatButton";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
@@ -45,15 +46,7 @@ export default function RootLayout({
               {children}
             </main>
 
-            <Link
-              href="/chat"
-              className="fixed bottom-24 right-6 ml-auto mr-0 md:mr-[calc((100vw-28rem)/2+1.5rem)] w-14 h-14 bg-primary text-white rounded-2xl shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40"
-              style={{
-                right: 'max(1.5rem, calc((100vw - 448px) / 2 + 1.5rem))'
-              }}
-            >
-              <MessageSquare size={28} fill="currentColor" />
-            </Link>
+            <FloatingChatButton />
 
             <BottomNav />
           </div>
